@@ -11,6 +11,8 @@ Provides a simple way of displaying up-to-date information about specific WordPr
 
 **This plugin is currently under active development.** Please feel free to try it out but it is not feature complete and may well be very broken at any point in time. [Feedback](http://lud.icro.us/wordpress-plugin-info/#comments) is very much appreciated.
 
+= Description =
+
 This plugin provides a simple way of displaying up-to-date information about specific plugins hosted on the WordPress Plugin Directory in your blog posts and pages. It is intended for plugin authors who want to display details of their own plugins from the WP Plugin Directory on their blog and want those details to remain up to date. It's also useful for bloggers who may blog about plugins and would like the details in their blog posts to remain up to date.
 
 This plugin uses WordPress shortcodes so it's ridiculously easy to include any information about a particular plugin in your post or page.
