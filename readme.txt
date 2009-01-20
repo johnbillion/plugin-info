@@ -99,3 +99,7 @@ Most shortcodes that display a formatted link can have their default link text o
 The plugin information is collected from wp.org each time you save your post or page. It uses the new Plugin API available in WordPress 2.7 (which is used mainly for browsing/downloading plugins from within WordPress). The plugin data is stored as an associative array in a custom field called 'plugin-info' linked to your post or page.
 
 **This plugin is not feature complete** because the plugin does not periodically update the data from wp.org, which is of course the whole point of this plugin. This is only because I simply haven't written that bit yet. Updates will come soon.
+
+== Screenshots ==
+
+1. Adding the custom field to the post. Give it the name ‘plugin’ and a value of the slug of one of your plugins in the WP Plugin Directory.
