@@ -102,4 +102,4 @@ The plugin information is collected from wp.org each time you save your post or 
 
 == Screenshots ==
 
-1. Adding the custom field to the post. Give it the name ‘plugin’ and a value of the slug of one of your plugins in the WP Plugin Directory.
+1. Adding the custom field to the post. Give it the name 'plugin' and a value of the slug of one of your plugins in the WP Plugin Directory.
