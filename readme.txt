@@ -23,6 +23,18 @@ You could type this information into your post but this means that in a few days
 
 This plugin allows you to use shortcodes in your blog posts and pages which fetches this information right from the WordPress Plugin Directory (using the little-documented Plugin API), and therefore the information always remains up to date. You can commit changes to your plugin and the information on your blog will remain current.
 
+= Here's an example =
+
+This plugin uses shortcodes so it's ridiculously easy to include any information about a particular plugin in your post or page:
+
+My plugin has been downloaded `[plugin downloaded]` times!
+
+This will produce the following content in your blog post:
+
+My plugin has been downloaded 1,650 times!
+
+The download count will remain current without you having to touch your blog post again.
+
 == Installation ==
 
 This plugin only works with WordPress 2.7 or later. Earlier versions of WordPress did not include the necessary Plugin API for the plugin to function.
