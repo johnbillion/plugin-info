@@ -55,30 +55,30 @@ Below is a list of all the available shortcodes.
 
 Most shortcodes that display a formatted link can have their default link text overridden by adding a 'text' parameter to the shortcode. For example: `[plugin homepage text='Homepage']` will display a link to the plugin homepage with the link text 'Homepage'.
 
-    * [plugin name] - The plugin name
-    * [plugin homepage] - A formatted link to the plugin's homepage with 'Visit plugin homepage' as the link text
-    * [plugin homepage_url] - The plain URL of the plugin's homepage
-    * [plugin link] - A formatted link to the plugin's page on the WP Plugin Directory with the plugin name as the link text
-    * [plugin link_url] - The plain URL of the plugin's page on the WP Plugin Directory
-    * [plugin download] - A formatted link to the plugin's ZIP file with 'Download' as the link text
-    * [plugin download_url] - The plain URL of the plugin's ZIP file
-    * [plugin author] - A formatted link to the plugin author's homepage with the author's name as the link text (if the author doesn't have a homepage this will simply display their name)
-    * [plugin author_url] - The plain URL of the plugin author's homepage
-    * [plugin author_name] - The plugin author's name
-    * [plugin version] - The plugin version number
-    * [plugin description] - The full description of the plugin
-    * [plugin requires] - The 'Requires at least' WP version number
-    * [plugin tested] - The 'Tested up to' WP version number
-    * [plugin downloaded] - The all time download count with comma-separated thousands (eg. "12,345")
-    * [plugin downloaded_raw] - The all time download count as a raw number (eg. "12345")
-    * [plugin last_updated] - The date the plugin was last updated, formatted according to your Date Format settings under Settings->General (eg. "20 January 2008")
-    * [plugin last_updated_ago] - How long ago the plugin was last updated (eg. "20 days ago")
-    * [plugin last_updated_raw] - The date the plugin was last updated, in the format "yyyy-mm-dd"
-    * [plugin slug] - The plugin slug
-    * [plugin rating] - The plugin's star rating as a whole number out of 5 (given by visitors to wp.org)
-    * [plugin rating_raw] - The plugin's actual average rating as a score out of 100 (given by visitors to wp.org)
-    * [plugin num_ratings] - The number of people who've rated your plugin on wp.org
-    * [plugin tags] - A comma-separated list of the plugin's tags
+* `[plugin name]` - The plugin name
+* `[plugin homepage]` - A formatted link to the plugin's homepage with 'Visit plugin homepage' as the link text
+* `[plugin homepage_url]` - The plain URL of the plugin's homepage
+* `[plugin link]` - A formatted link to the plugin's page on the WP Plugin Directory with the plugin name as the link text
+* `[plugin link_url]` - The plain URL of the plugin's page on the WP Plugin Directory
+* `[plugin download]` - A formatted link to the plugin's ZIP file with 'Download' as the link text
+* `[plugin download_url]` - The plain URL of the plugin's ZIP file
+* `[plugin author]` - A formatted link to the plugin author's homepage with the author's name as the link text (if the author doesn't have a homepage this will simply display their name)
+* `[plugin author_url]` - The plain URL of the plugin author's homepage
+* `[plugin author_name]` - The plugin author's name
+* `[plugin version]` - The plugin version number
+* `[plugin description]` - The full description of the plugin
+* `[plugin requires]` - The 'Requires at least' WP version number
+* `[plugin tested]` - The 'Tested up to' WP version number
+* `[plugin downloaded]` - The all time download count with comma-separated thousands (eg. "12,345")
+* `[plugin downloaded_raw]` - The all time download count as a raw number (eg. "12345")
+* `[plugin last_updated]` - The date the plugin was last updated, formatted according to your Date Format settings under Settings->General (eg. "20 January 2008")
+* `[plugin last_updated_ago]` - How long ago the plugin was last updated (eg. "20 days ago")
+* `[plugin last_updated_raw]` - The date the plugin was last updated, in the format "yyyy-mm-dd"
+* `[plugin slug]` - The plugin slug
+* `[plugin rating]` - The plugin's star rating as a whole number out of 5 (given by visitors to wp.org)
+* `[plugin rating_raw]` - The plugin's actual average rating as a score out of 100 (given by visitors to wp.org)
+* `[plugin num_ratings]` - The number of people who've rated your plugin on wp.org
+* `[plugin tags]` - A comma-separated list of the plugin's tags
 
 = The geek stuff =
 
