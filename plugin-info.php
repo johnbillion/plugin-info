@@ -117,15 +117,14 @@ class PluginInfo {
 
 		}
 
-		$info['downloaded']       = number_format( $info['downloaded_raw'] );
-		$info['rating']           = ceil( 0.05 * $info['rating_raw'] );
-		$info['link_url']         = "http://wordpress.org/extend/plugins/{$info['slug']}/";
-		$info['updated']          = date( get_option('date_format'), strtotime( $info['updated_raw'] ) );
-		$info['updated_ago']      = sprintf( __('%s ago'), human_time_diff( strtotime( $info['updated_raw'] ) ) );
-		$info['download']         = '<a href="' . $info['download_url'] . '">%s</a>';
-		$info['homepage']         = '<a href="' . $info['homepage_url'] . '">%s</a>';
-		$info['link']             = '<a href="' . $info['link_url'] . '">%s</a>';
-		$info['screenshots']      = preg_replace( "/src='([^\']+)'/i","src='{$info['link_url']}$1'", $info['screenshots'] );
+		$info['downloaded']  = number_format( $info['downloaded_raw'] );
+		$info['rating']      = ceil( 0.05 * $info['rating_raw'] );
+		$info['link_url']    = "http://wordpress.org/extend/plugins/{$info['slug']}/";
+		$info['updated']     = date( get_option('date_format'), strtotime( $info['updated_raw'] ) );
+		$info['updated_ago'] = sprintf( __('%s ago'), human_time_diff( strtotime( $info['updated_raw'] ) ) );
+		$info['download']    = '<a href="' . $info['download_url'] . '">%s</a>';
+		$info['homepage']    = '<a href="' . $info['homepage_url'] . '">%s</a>';
+		$info['link']        = '<a href="' . $info['link_url'] . '">%s</a>';
 
 		if ( isset( $info['screenshots'] ) )
 			$info['screenshots'] = preg_replace( "/src='([^\']+)'/i","src='{$info['link_url']}$1'", $info['screenshots'] );
