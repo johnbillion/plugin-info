@@ -63,8 +63,7 @@ The majority of the available shortcodes can be seen from the post writing scree
 
 Please see http://lud.icro.us/wordpress-plugin-info/ for a definitive list of the available shortcodes. There are a few additional (less useful) shortcodes listed there.
 
-Shortcodes that display a formatted hyperlink can have their default link text overridden by adding a 'text' parameter to the shortcode. For example: `[plugin homepage text='Homepage']` will display a link to the plugin homepage with the link text 'Homepage'.
-
+Shortcodes which display a formatted hyperlink can have their default link text overridden by adding a 'text' parameter. For example: `[plugin homepage text='Homepage']` will display a link to the plugin homepage with the link text 'Homepage'.
 
 = The geek stuff =
 
