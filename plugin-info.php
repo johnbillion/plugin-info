@@ -1,12 +1,14 @@
 <?php
 /*
-Plugin Name: Plugin Info
-Description: Provides a simple way of displaying up-to-date information about specific WordPress Plugin Directory hosted plugins in your blog posts and pages.
-Plugin URI:  http://lud.icro.us/wordpress-plugin-info/
-Version:     0.3
-License:     GNU General Public License
-Author:      John Blackbourn
-Author URI:  http://johnblackbourn.com/
+Plugin Name:  Plugin Info
+Description:  Provides a simple way of displaying up-to-date information about specific WordPress Plugin Directory hosted plugins in your blog posts and pages.
+Plugin URI:   http://lud.icro.us/wordpress-plugin-info/
+Version:      0.4
+Author:       John Blackbourn
+Author URI:   http://johnblackbourn.com/
+License:      GNU General Public License
+Requires:     2.7
+Tested up to: 2.7.1
 
 	This program is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -20,8 +22,15 @@ Author URI:  http://johnblackbourn.com/
 
 Changelog:
 
+0.4 - 2009/01/31
+Periodic updating of plugin information using WP-Cron.
+Addition of 'screenshots' shortcode.
+Addition of a nice meta box on the writing screen.
+Better overall error handling.
+    More props to: Matt Martz.
+
 0.3 - 2009/01/31
-Implemented periodic updating of plugin information using WP-Cron.
+A completely broken release :(
 
 0.2 - 2009/01/20
 Additions and updates to several shortcode attributes.
@@ -39,8 +48,8 @@ class PluginInfo {
 	function PluginInfo() {
 
 		add_action( 'admin_menu',         array( &$this, 'admin_menu' ) );
+		add_action( 'admin_head',         array( &$this, 'admin_head' ) );
 		add_action( 'save_post',          array( &$this, 'save_plugin_info' ) );
-		add_action( 'save_page',          array( &$this, 'save_plugin_info' ) );
 		add_action( 'update_plugin_info', array( &$this, 'update_plugin_info' ) );
 		add_filter( 'ozh_adminmenu_icon', array( &$this, 'ozh_adminmenu_icon' ) );
 		add_shortcode( 'plugin',          array( &$this, 'plugin_info_shortcode' ) );
@@ -50,13 +59,9 @@ class PluginInfo {
 
 		$this->plugin = array(
 			'url' => WP_PLUGIN_URL . '/' . basename( dirname( __FILE__ ) ),
-			'ver' => '0.3'
+			'dir' => WP_PLUGIN_DIR . '/' . basename( dirname( __FILE__ ) )
 		);
 
-	}
-
-	function admin_menu() {
-		add_options_page( 'Plugin Info Settings', 'Plugin Info', 'manage_options', 'plugin_info', array( &$this, 'settings' ) );
 	}
 
 	function get_plugin_info( $slug = null ) {
@@ -66,14 +71,14 @@ class PluginInfo {
 
 		require_once( ABSPATH . 'wp-admin/includes/plugin-install.php' );
 
+		$info   = array();
 		$slug   = sanitize_title( $slug );
 		$plugin = plugins_api( 'plugin_information', array( 'slug' => $slug ) );
-		$info   = array();
 
-		/*echo '<pre>';
-		print_r( $plugin );
-		echo '</pre>';
-		die();*/
+		if ( !$plugin or is_wp_error( $plugin ) )
+			return false;
+
+		#die( '<pre>' . print_r( $plugin, true ) . '</pre>' );
 
 		$attributes = array(
 			'name'             => 'name',
@@ -84,12 +89,12 @@ class PluginInfo {
 			'tested'           => 'tested',
 			'rating_raw'       => 'rating',
 			'downloaded_raw'   => 'downloaded',
-			'last_updated_raw' => 'last_updated',
+			'updated_raw'      => 'last_updated',
 			'num_ratings'      => 'num_ratings',
 			'description'      => array( 'sections', 'description' ),
-			'faq'              => array( 'sections', 'faq' ),
 			'installation'     => array( 'sections', 'installation' ),
-			#'screenshots'      => array( 'sections', 'screenshots' ), # awaiting API support
+			'faq'              => array( 'sections', 'faq' ),
+			'screenshots'      => array( 'sections', 'screenshots' ),
 			#'other_notes'      => array( 'sections', 'other_notes' ), # awaiting API support
 			'download_url'     => 'download_link',
 			'homepage_url'     => 'homepage',
@@ -100,12 +105,14 @@ class PluginInfo {
 		
 			if ( is_array( $key ) ) {
 				$_key = $plugin->$key[0];
-				$info[$name] = $_key[$key[1]];
+				if ( isset( $_key[$key[1]] ) )
+					$info[$name] = $_key[$key[1]];
 			} else {
-				$info[$name] = $plugin->$key;
+				if ( isset( $plugin->$key ) )
+					$info[$name] = $plugin->$key;
 			}
 
-			if ( is_array( $info[$name] ) )
+			if ( isset( $info[$name] ) and is_array( $info[$name] ) )
 				$info[$name] = implode( ', ', $info[$name] );
 
 		}
@@ -113,12 +120,14 @@ class PluginInfo {
 		$info['downloaded']       = number_format( $info['downloaded_raw'] );
 		$info['rating']           = ceil( 0.05 * $info['rating_raw'] );
 		$info['link_url']         = "http://wordpress.org/extend/plugins/{$info['slug']}/";
-		$info['last_updated']     = date( get_option('date_format'), strtotime( $info['last_updated_raw'] ) );
-		$info['last_updated_ago'] = sprintf( __('%s ago'), human_time_diff( strtotime( $info['last_updated_raw'] ) ) );
+		$info['updated']          = date( get_option('date_format'), strtotime( $info['updated_raw'] ) );
+		$info['updated_ago']      = sprintf( __('%s ago'), human_time_diff( strtotime( $info['updated_raw'] ) ) );
 		$info['download']         = '<a href="' . $info['download_url'] . '">%s</a>';
 		$info['homepage']         = '<a href="' . $info['homepage_url'] . '">%s</a>';
-		$info['link']             = '<a href="' . $info['link_url']   . '">%s</a>';
-		#$info['screenshots']      = preg_replace( "/src='([^\']+)'/i","src='{$info['link_url']}$1'", $info['screenshots'] ); # awaiting API support
+		$info['link']             = '<a href="' . $info['link_url'] . '">%s</a>';
+
+		if ( isset( $info['screenshots'] ) )
+			$info['screenshots'] = preg_replace( "/src='([^\']+)'/i","src='{$info['link_url']}$1'", $info['screenshots'] );
 
 		if ( preg_match( '/href="([^"]+)"/i', $info['author'], $matches ) )
 			$info['author_url'] = $matches[1];
@@ -129,9 +138,13 @@ class PluginInfo {
 			$info['author_name'] = $info['author'];
 
 		# The following values are *deprecated* but remain for those who may be using them:
-		$info['download_link'] = $info['download_url']; # use download_url instead
-		$info['tags_list']     = $info['tags'];         # use tags instead
-		$info['extend']        = $info['link_url'];     # use link_url instead
+		$info['download_link']     = $info['download_url']; # use download_url instead
+		$info['tags_list']         = $info['tags'];         # use tags instead
+		$info['extend']            = $info['link_url'];     # use link_url instead
+		$info['last_updated_nice'] = $info['updated'];      # use updated instead
+		$info['last_updated']      = $info['updated'];      # use updated instead
+		$info['last_updated_ago']  = $info['updated_ago'];  # use updated_ago instead
+		$info['last_updated_raw']  = $info['updated_raw'];  # use updated_raw instead
 
 		/*
 		 * The `plugin_info` filter below allows a plugin/theme to add or
@@ -178,32 +191,39 @@ class PluginInfo {
 			return;
 
 		foreach ( $posts as $p ) {
-
-			$info = $this->get_plugin_info( stripslashes( $p['meta_value'] ) );
-			update_post_meta( $p->ID, 'plugin-info', $info );
-
+			$plugin_info = $this->get_plugin_info( stripslashes( $p['meta_value'] ) );
+			if ( $plugin_info )
+				update_post_meta( $p->ID, 'plugin-info', $plugin_info );
 		}
 
 	}
 
 	function save_plugin_info( $post_ID ) {
 
-		if ( !isset( $_POST['meta'] ) or !is_array( $_POST['meta'] ) )
+		if ( wp_is_post_revision( $post_ID ) or wp_is_post_autosave( $post_ID ) )
 			return;
 
-		foreach ( $_POST['meta'] as $meta ) {
+		if ( !isset( $_POST['plugin_info'] ) ) {
 
-			if ( $meta['key'] != 'plugin' )
-				continue;
+			delete_post_meta( $post_ID, 'plugin' );
+			delete_post_meta( $post_ID, 'plugin-info' );
 
-			$info = $this->get_plugin_info( stripslashes( $meta['value'] ) );
+		} else {
 
-			if ( !update_post_meta( $post_ID, 'plugin-info', $info ) )
-				add_post_meta( $post_ID, 'plugin-info', $info );
+			$plugin = trim( $_POST['plugin_info'] );
+			$plugin_info = $this->get_plugin_info( $plugin );
 
-			return true;
+			if ( !$plugin_info )
+				return false; # @TODO: display error msg?
+
+			if ( !update_post_meta( $post_ID, 'plugin', $plugin ) )
+				add_post_meta( $post_ID, 'plugin', $plugin );
+			if ( !update_post_meta( $post_ID, 'plugin-info', $plugin_info ) )
+				add_post_meta( $post_ID, 'plugin-info', $plugin_info );
 
 		}
+
+		return;
 
 	}
 
@@ -218,11 +238,14 @@ class PluginInfo {
 
 		$meta = get_post_meta( $post->ID, 'plugin-info', true );
 
+		if ( !isset( $meta[$atts[0]] ) )
+			return '';
+
 		if ( false !== strpos( $meta[$atts[0]], '%s' ) ) {
 
 			$texts = array(
-				'download' => __( 'Download' ),
-				'homepage' => __( 'Visit plugin homepage' ),
+				'download' => __( 'Download', 'plugin-info' ),
+				'homepage' => __( 'Visit plugin homepage', 'plugin-info' ),
 				'link'     => $meta['name']
 			);
 
@@ -235,35 +258,143 @@ class PluginInfo {
 
 	}
 
-	function settings() {
+	function admin_head() {
+		if ( $this->is_post_writing_screen() ) {
 		?>
+		<script type="text/javascript"><!--
 
-	<div class="wrap">
-	<div id="icon-options-general" class="icon32"><br /></div>
-	<h2><?php _e( 'Plugin Info Settings', 'plugin_info' ); ?></h2>
+			jQuery(function($) {
+				$('#plugin_info_shortcodes').hide();
+				$('#plugin_info_show_shortcodes').show();
+				$('#plugin_info_show_shortcodes').click(function(){
+					$('#plugin_info_shortcodes').toggle();
+					text = $('#plugin_info_shortcodes').is(':visible') ? '[ hide ]' : '[ show ]';
+					$(this).text(text);
+					return false;
+				});
+			} );
 
-	<form method="post" action="options.php">
-	<?php wp_nonce_field( 'update-options' ); ?>
-	<input type="hidden" name="action" value="update" />
-	<input type="hidden" name="page_options" value="plugin_info_shortcode,plugin_info_filter" />
+		--></script>
+		<style type="text/css">
 
-	<table class="form-table">
-	<tr valign="top">
-		<th scope="row"><?php _e( '1', 'plugin_info' ); ?></th>
-		<td>2</td>
-	</tr>
-	<tr valign="top">
-		<th scope="row"><?php _e( '3', 'plugin_info' ); ?></th>
-		<td>4</td>
-	</tr>
-	</table>
+			#plugin_info {
+				width: 98%;
+				margin-top: 5px
+			}
 
-	<p class="submit"><input type="submit" class="button-primary" value="<?php _e('Save Changes') ?>" /></p>
-	</form>
+			#plugin_info_shortcodes dl {
+				margin: 5px 5px 10px;
+			}
 
-	</div>
+			#plugin_info_shortcodes dl {
+				overflow: auto;
+				font-size: 0.9em;
+				border-bottom: 1px solid #dfdfdf;
+				padding-bottom: 8px;
+			}
 
-	<?php
+			#plugin_info_shortcodes dt {
+				float: left;
+				clear: left;
+				width: 50%;
+				margin: 0px 1% 5px 0px;
+			}
+
+			#plugin_info_shortcodes dd {
+				float: left;
+				width: 49%;
+				margin-bottom: 5px;
+			}
+
+			#plugin_info_show_shortcodes {
+				display: none;
+			}
+
+			#plugin_info_shortcodes p {
+				font-style: italic;
+			}
+
+		</style>
+		<?php
+		}
+	}
+
+	function meta_box( $post ) {
+		?>
+		<label for="plugin_info"><?php _e( 'Plugin slug:', 'plugin_info' ); ?></label>
+		<input type="text" name="plugin_info" id="plugin_info" value="<?php echo attribute_escape( get_post_meta( $post->ID, 'plugin', true ) ); ?>" />
+		<p class="howto"><?php _e( 'To display information about a plugin, you should use one of the shortcodes below.', 'plugin_info' ); ?></p>
+		<?php # @TODO: i18n on this list: ?>
+		<div id="plugin_info_shortcodes">
+			<p>Plain info:</p>
+			<dl>
+				<dt>[plugin author_name]</dt>
+				<dd class="howto">Author&rsquo;s name</dd>
+				<dt>[plugin download_url]</dt>
+				<dd class="howto">URL of ZIP file</dd>
+				<dt>[plugin downloaded]</dt>
+				<dd class="howto">Download count</dd>
+				<dt>[plugin homepage_url]</dt>
+				<dd class="howto">URL of homepage</dd>
+				<dt>[plugin link_url]</dt>
+				<dd class="howto">URL of wp.org page</dd>
+				<dt>[plugin name]</dt>
+				<dd class="howto">Name</dd>
+				<dt>[plugin requires]</dt>
+				<dd class="howto">&rsquo;Requires at least&lsquo; version number</dd>
+				<dt>[plugin rating]</dt>
+				<dd class="howto">Rating out of 5</dd>
+				<dt>[plugin slug]</dt>
+				<dd class="howto">Slug</dd>
+				<dt>[plugin tags]</dt>
+				<dd class="howto">List of tags</dd>
+				<dt>[plugin tested]</dt>
+				<dd class="howto">&rsquo;Tested up to&lsquo; version number</dd>
+				<dt>[plugin updated_ago]</dt>
+				<dd class="howto">Last updated ago (hours/days/weeks)</dd>
+				<dt>[plugin updated]</dt>
+				<dd class="howto">Last updated date</dd>
+				<dt>[plugin version]</dt>
+				<dd class="howto">Version number</dd>
+			</dl>
+			<p>Formatted info:</p>
+			<dl>
+				<dt>[plugin author]</dt>
+				<dd class="howto">Link to author&rsquo;s homepage</dd>
+				<dt>[plugin description]</dt>
+				<dd class="howto">Long description</dd>
+				<dt>[plugin download]</dt>
+				<dd class="howto">Link to ZIP file</dd>
+				<dt>[plugin homepage]</dt>
+				<dd class="howto">Link to homepage</dd>
+				<dt>[plugin link]</dt>
+				<dd class="howto">Link to wp.org page</dd>
+			</dl>
+		</div>
+		<p><a href="#" id="plugin_info_show_shortcodes">[ show ]</a></p>
+		<?php
+	}
+
+	function admin_menu() {
+		add_meta_box(
+			'plugininfo',
+			__( 'Plugin Info', 'plugin_info' ),
+			array( &$this, 'meta_box' ),
+			'post'
+		);
+		add_meta_box(
+			'plugininfo',
+			__( 'Plugin Info', 'plugin_info' ),
+			array( &$this, 'meta_box' ),
+			'page'
+		);
+	}
+
+	function is_post_writing_screen() {
+		foreach ( array( 'post.php', 'post-new.php', 'page.php', 'page-new.php' ) as $file )
+			if ( strpos( $_SERVER['REQUEST_URI'], $file ) )
+				return true;
+		return false;
 	}
 
 	function ozh_adminmenu_icon( $hook ) {
@@ -273,7 +404,7 @@ class PluginInfo {
 	}
 
 	function activate() {
-		wp_schedule_event( ( time() + 86400 ), 'daily', 'update_plugin_info' );
+		wp_schedule_event( time(), 'hourly', 'update_plugin_info' );
 	}
 
 	function deactivate() {
@@ -281,15 +412,6 @@ class PluginInfo {
 	}
 
 }
-
-if ( !defined( 'WP_CONTENT_URL' ) )
-	define( 'WP_CONTENT_URL', get_option( 'siteurl' ) . '/wp-content' );
-if ( !defined( 'WP_CONTENT_DIR' ) )
-	define( 'WP_CONTENT_DIR', ABSPATH . 'wp-content' );
-if ( !defined( 'WP_PLUGIN_URL' ) )
-	define( 'WP_PLUGIN_URL', WP_CONTENT_URL. '/plugins' );
-if ( !defined( 'WP_PLUGIN_DIR' ) )
-	define( 'WP_PLUGIN_DIR', WP_CONTENT_DIR . '/plugins' );
 
 load_plugin_textdomain( 'plugin_info', PLUGINDIR . '/' . dirname( plugin_basename( __FILE__ ) ), dirname( plugin_basename( __FILE__ ) ) ); # eugh
 
