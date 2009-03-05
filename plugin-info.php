@@ -369,6 +369,8 @@ class PluginInfo {
 				<dd class="howto">Link to homepage</dd>
 				<dt>[plugin link]</dt>
 				<dd class="howto">Link to wp.org page</dd>
+				<dt>[plugin screenshots]</dt>
+				<dd class="howto">List of screenshots</dd>
 			</dl>
 		</div>
 		<p><a href="#" id="plugin_info_show_shortcodes">[ show ]</a></p>
