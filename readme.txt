@@ -7,7 +7,7 @@ Stable tag: trunk
 
 Provides a simple way of displaying up-to-date information about specific WordPress Plugin Directory hosted plugins in your blog posts and pages.
 
-= Description =
+== Description ==
 
 This plugin provides a simple way of displaying up-to-date information about specific plugins hosted on the WordPress Plugin Directory in your blog posts and pages. It is intended for plugin authors who want to display details of their own plugins from the WP Plugin Directory on their blog and want those details to remain up to date. It's also useful for bloggers who may blog about plugins and would like the details in their blog posts to remain up to date.
 
