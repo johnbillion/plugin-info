@@ -125,6 +125,7 @@ class PluginInfo {
 		$info['download']         = '<a href="' . $info['download_url'] . '">%s</a>';
 		$info['homepage']         = '<a href="' . $info['homepage_url'] . '">%s</a>';
 		$info['link']             = '<a href="' . $info['link_url'] . '">%s</a>';
+		$info['screenshots']      = preg_replace( "/src='([^\']+)'/i","src='{$info['link_url']}$1'", $info['screenshots'] );
 
 		if ( isset( $info['screenshots'] ) )
 			$info['screenshots'] = preg_replace( "/src='([^\']+)'/i","src='{$info['link_url']}$1'", $info['screenshots'] );
