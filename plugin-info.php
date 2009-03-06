@@ -23,7 +23,7 @@ Tested up to: 2.7.1
 Changelog:
 
 0.4.1   2009/03/06
-Addition of 'authorprofile', 'authorprofile_url' and 'other_notes' shortcodes.
+Addition of 'profile', 'profile_url' and 'other_notes' shortcodes.
 
 0.4     2009/03/05
 Periodic updating of plugin information using WP-Cron.
