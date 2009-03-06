@@ -3,7 +3,7 @@
 Plugin Name:  Plugin Info
 Description:  Provides a simple way of displaying up-to-date information about specific WordPress Plugin Directory hosted plugins in your blog posts and pages.
 Plugin URI:   http://lud.icro.us/wordpress-plugin-info/
-Version:      0.4
+Version:      0.4.1
 Author:       John Blackbourn
 Author URI:   http://johnblackbourn.com/
 License:      GNU General Public License
@@ -22,21 +22,24 @@ Tested up to: 2.7.1
 
 Changelog:
 
-0.4 - 2009/01/31
+0.4.1   2009/03/06
+Addition of 'authorprofile', 'authorprofile_url' and 'other_notes' shortcodes.
+
+0.4     2009/03/05
 Periodic updating of plugin information using WP-Cron.
 Addition of 'screenshots' shortcode.
 Addition of a nice meta box on the writing screen.
 Better overall error handling.
     More props to: Matt Martz.
 
-0.3 - 2009/01/31
+0.3     2009/01/31
 A completely broken release :(
 
-0.2 - 2009/01/20
+0.2     2009/01/20
 Additions and updates to several shortcode attributes.
     Mad props to: Matt Martz & Kim Parsell.
 
-0.1 - 2008/12/16
+0.1     2008/12/16
 Initial release.
 
 */
@@ -85,6 +88,7 @@ class PluginInfo {
 			'slug'             => 'slug',
 			'version'          => 'version',
 			'author'           => 'author',
+			'profile_url'      => 'author_profile',
 			'requires'         => 'requires',
 			'tested'           => 'tested',
 			'rating_raw'       => 'rating',
@@ -95,7 +99,7 @@ class PluginInfo {
 			'installation'     => array( 'sections', 'installation' ),
 			'faq'              => array( 'sections', 'faq' ),
 			'screenshots'      => array( 'sections', 'screenshots' ),
-			#'other_notes'      => array( 'sections', 'other_notes' ), # awaiting API support
+			'other_notes'      => array( 'sections', 'other_notes' ),
 			'download_url'     => 'download_link',
 			'homepage_url'     => 'homepage',
 			'tags'             => 'tags'
@@ -124,7 +128,8 @@ class PluginInfo {
 		$info['updated_ago'] = sprintf( __('%s ago'), human_time_diff( strtotime( $info['updated_raw'] ) ) );
 		$info['download']    = '<a href="' . $info['download_url'] . '">%s</a>';
 		$info['homepage']    = '<a href="' . $info['homepage_url'] . '">%s</a>';
-		$info['link']        = '<a href="' . $info['link_url'] . '">%s</a>';
+		$info['link']        = '<a href="' . $info['link_url']     . '">%s</a>';
+		$info['profile']     = '<a href="' . $info['profile_url']  . '">%s</a>';
 
 		if ( isset( $info['screenshots'] ) )
 			$info['screenshots'] = preg_replace( "/src='([^\']+)'/i","src='{$info['link_url']}$1'", $info['screenshots'] );
@@ -246,7 +251,8 @@ class PluginInfo {
 			$texts = array(
 				'download' => __( 'Download', 'plugin-info' ),
 				'homepage' => __( 'Visit plugin homepage', 'plugin-info' ),
-				'link'     => $meta['name']
+				'link'     => $meta['name'],
+				'profile'  => $meta['author_name']
 			);
 
 			$text = ( $atts['text'] ) ? $atts['text'] : $texts[$atts[0]];
@@ -330,6 +336,8 @@ class PluginInfo {
 			<dl>
 				<dt>[plugin author_name]</dt>
 				<dd class="howto">Author&rsquo;s name</dd>
+				<dt>[plugin author_url]</dt>
+				<dd class="howto">Author&rsquo;s URL</dd>
 				<dt>[plugin download_url]</dt>
 				<dd class="howto">URL of ZIP file</dd>
 				<dt>[plugin downloaded]</dt>
@@ -340,6 +348,8 @@ class PluginInfo {
 				<dd class="howto">URL of wp.org page</dd>
 				<dt>[plugin name]</dt>
 				<dd class="howto">Name</dd>
+				<dt>[plugin profile_url]</dt>
+				<dd class="howto">URL of author&rsquo;s wp.org profile</dd>
 				<dt>[plugin requires]</dt>
 				<dd class="howto">&rsquo;Requires at least&lsquo; version number</dd>
 				<dt>[plugin rating]</dt>
@@ -369,8 +379,12 @@ class PluginInfo {
 				<dd class="howto">Link to homepage</dd>
 				<dt>[plugin link]</dt>
 				<dd class="howto">Link to wp.org page</dd>
+				<dt>[plugin profile]</dt>
+				<dd class="howto">Link to author&rsquo;s wp.org profile</dd>
 				<dt>[plugin screenshots]</dt>
 				<dd class="howto">List of screenshots</dd>
+				<dt>[plugin other_notes]</dt>
+				<dd class="howto">Other notes</dd>
 			</dl>
 		</div>
 		<p><a href="#" id="plugin_info_show_shortcodes">[ show ]</a></p>
