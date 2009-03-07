@@ -397,14 +397,14 @@ class PluginInfo {
 			__( 'Plugin Info', 'plugin_info' ),
 			array( &$this, 'meta_box' ),
 			'post',
-			'normal'
+			'side'
 		);
 		add_meta_box(
 			'plugininfo',
 			__( 'Plugin Info', 'plugin_info' ),
 			array( &$this, 'meta_box' ),
 			'page',
-			'normal'
+			'side'
 		);
 	}
 
