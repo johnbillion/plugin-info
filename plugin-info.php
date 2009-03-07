@@ -396,13 +396,15 @@ class PluginInfo {
 			'plugininfo',
 			__( 'Plugin Info', 'plugin_info' ),
 			array( &$this, 'meta_box' ),
-			'post'
+			'post',
+			'normal'
 		);
 		add_meta_box(
 			'plugininfo',
 			__( 'Plugin Info', 'plugin_info' ),
 			array( &$this, 'meta_box' ),
-			'page'
+			'page',
+			'normal'
 		);
 	}
 
