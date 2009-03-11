@@ -3,7 +3,7 @@
 Plugin Name:  Plugin Info
 Description:  Provides a simple way of displaying up-to-date information about specific WordPress Plugin Directory hosted plugins in your blog posts and pages.
 Plugin URI:   http://lud.icro.us/wordpress-plugin-info/
-Version:      0.4.1
+Version:      0.5
 Author:       John Blackbourn
 Author URI:   http://johnblackbourn.com/
 License:      GNU General Public License
@@ -21,6 +21,9 @@ Tested up to: 2.7.1
 	GNU General Public License for more details.
 
 Changelog:
+
+0.5     2009/03/11
+Matt Martz is in ur plugins fixin ur codes. (Hourly updates now work.)
 
 0.4.1   2009/03/06
 Addition of 'profile', 'profile_url' and 'other_notes' shortcodes.
@@ -196,7 +199,7 @@ class PluginInfo {
 			return;
 
 		foreach ( $posts as $p ) {
-			$plugin_info = $this->get_plugin_info( stripslashes( $p['meta_value'] ) );
+			$plugin_info = $this->get_plugin_info( stripslashes( $p->meta_value ) );
 			if ( $plugin_info )
 				update_post_meta( $p->ID, 'plugin-info', $plugin_info );
 		}
