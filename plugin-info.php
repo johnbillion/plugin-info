@@ -3,7 +3,7 @@
 Plugin Name:  Plugin Info
 Description:  Provides a simple way of displaying up-to-date information about specific WordPress Plugin Directory hosted plugins in your blog posts and pages.
 Plugin URI:   http://lud.icro.us/wordpress-plugin-info/
-Version:      0.5.1
+Version:      0.6
 Author:       John Blackbourn
 Author URI:   http://johnblackbourn.com/
 License:      GNU General Public License
@@ -21,6 +21,10 @@ Tested up to: 2.7.1
 	GNU General Public License for more details.
 
 Changelog:
+
+0.6     2009/03/25
+Shortcodes in the post meta box can now be clicked to insert them into your post.
+Addition of custom sub-headings contained in the 'other notes' section.
 
 0.5.1   2009/03/14
 Ensure all 'plugin info' posts are found in the update process.
@@ -138,15 +142,23 @@ class PluginInfo {
 		$info['profile']     = '<a href="' . $info['profile_url']  . '">%s</a>';
 
 		if ( isset( $info['screenshots'] ) )
-			$info['screenshots'] = preg_replace( "/src='([^\']+)'/i","src='{$info['link_url']}$1'", $info['screenshots'] );
+			$info['screenshots'] = preg_replace( "|src='([^\']+)'|i","src='{$info['link_url']}$1'", $info['screenshots'] );
 
-		if ( preg_match( '/href="([^"]+)"/i', $info['author'], $matches ) )
+		if ( preg_match( '|href="([^"]+)"|i', $info['author'], $matches ) )
 			$info['author_url'] = $matches[1];
 
-		if ( preg_match( '/>([^<]+)</i', $info['author'], $matches ) )
+		if ( preg_match( '|>([^<]+)<|i', $info['author'], $matches ) )
 			$info['author_name'] = $matches[1];
 		else
 			$info['author_name'] = $info['author'];
+
+		if ( isset( $info['other_notes'] ) and preg_match_all( '|<h3>([^<]+)</h3>|i', $info['other_notes'], $matches, PREG_SET_ORDER ) ) {
+			for ( $i = 0; isset( $matches[$i] ); $i++ ) {
+				$end = isset( $matches[$i+1][0] ) ? $matches[$i+1][0] : '$';
+				preg_match( '|' . $matches[$i][0] . '(.*)' . $end . '|si', $info['other_notes'], $match );
+				$info[sanitize_title( $matches[$i][1] )] = $match[1];
+			}
+		}
 
 		# The following values are *deprecated* but remain for those who may be using them:
 		$info['download_link']     = $info['download_url']; # use download_url instead
@@ -277,6 +289,7 @@ class PluginInfo {
 		<script type="text/javascript"><!--
 
 			jQuery(function($) {
+
 				$('#plugin_info_shortcodes').hide();
 				$('#plugin_info_show_shortcodes').show();
 				$('#plugin_info_show_shortcodes').click(function(){
@@ -285,6 +298,14 @@ class PluginInfo {
 					$(this).text(text);
 					return false;
 				});
+				$('#plugin_info_shortcodes dt').click(function(){
+					if ( ( typeof window.tinyMCE != 'undefined' ) && ( window.tinyMCE.activeEditor ) && ( !tinyMCE.activeEditor.isHidden() ) ) {
+						tinyMCE.execCommand('mceInsertContent', false, $(this).text() + '</p>');
+					} else {
+						edInsertContent(document.getElementById('content'), $(this).text());
+					}
+				});
+
 			} );
 
 		--></script>
@@ -311,6 +332,11 @@ class PluginInfo {
 				clear: left;
 				width: 50%;
 				margin: 0px 1% 5px 0px;
+				cursor: pointer;
+			}
+
+			#plugin_info_shortcodes dt:hover {
+				color: #D54E21;
 			}
 
 			#plugin_info_shortcodes dd {

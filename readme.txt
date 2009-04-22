@@ -1,5 +1,5 @@
 === Plugin Info ===
-Contributors: johnbillion
+Contributors: johnbillion, sivel
 Tags: plugin, info, data, utility, developer, meta, tool
 Requires at least: 2.7
 Tested up to: 2.7.1
