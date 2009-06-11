@@ -2,7 +2,7 @@
 Contributors: johnbillion, sivel
 Tags: plugin, info, data, utility, developer, meta, tool
 Requires at least: 2.7
-Tested up to: 2.7.1
+Tested up to: 2.8
 Stable tag: trunk
 
 Provides a simple way of displaying up-to-date information about specific WordPress Plugin Directory hosted plugins in your blog posts and pages.

@@ -8,7 +8,7 @@ Author:       John Blackbourn
 Author URI:   http://johnblackbourn.com/
 License:      GNU General Public License
 Requires:     2.7
-Tested up to: 2.7.1
+Tested up to: 2.8
 
 	This program is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
