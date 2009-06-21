@@ -3,7 +3,7 @@
 Plugin Name:  Plugin Info
 Description:  Provides a simple way of displaying up-to-date information about specific WordPress Plugin Directory hosted plugins in your blog posts and pages.
 Plugin URI:   http://lud.icro.us/wordpress-plugin-info/
-Version:      0.7
+Version:      0.7.1
 Author:       John Blackbourn
 Author URI:   http://johnblackbourn.com/
 License:      GNU General Public License
@@ -121,7 +121,7 @@ class PluginInfo {
 		else
 			$info['author_name'] = $info['author'];
 
-		if ( isset( $info['changelog'] ) and preg_match( "|<h4>{$info['version']}</h4>(.*)|is", $info['changelog'], $matches ) )
+		if ( isset( $info['changelog'] ) and preg_match( "#<h4>{$info['version']}[^<]*</h4>(.*?)(<h4>|$)#is", $info['changelog'], $matches ) )
 			$info['latest_change'] = trim( $matches[1] );
 
 		if ( isset( $info['other_notes'] ) and preg_match_all( '|<h3>([^<]+)</h3>|i', $info['other_notes'], $matches, PREG_SET_ORDER ) ) {

@@ -75,6 +75,9 @@ The plugin information is collected from wp.org each time you save your post or 
 
 == Changelog ==
 
+= 0.7.1 =
+* Improvement to the [plugin latest_change] detection.
+
 = 0.7 =
 * Bugfix to prevent loss of plugin info when using Quick Edit.
 * Support for changelogs.
