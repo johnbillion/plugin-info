@@ -75,37 +75,37 @@ The plugin information is collected from wp.org each time you save your post or 
 
 == Changelog ==
 
-= 0.7 (2009/06/21) =
+= 0.7 =
 * Bugfix to prevent loss of plugin info when using Quick Edit.
 * Support for changelogs.
 
-= 0.6 (2009/03/25) =
+= 0.6 =
 * Shortcodes in the post meta box can now be clicked to insert them into your post.
 * Addition of custom sub-headings contained in the 'other notes' section.
 
-= 0.5.1 (2009/03/14) =
+= 0.5.1 =
 * Ensure all 'plugin info' posts are found in the update process.
 
-= 0.5 (2009/03/11) =
+= 0.5 =
 * Matt Martz is in ur plugins fixin ur codes. (Hourly updates now work.)
 
-= 0.4.1 (2009/03/06) =
+= 0.4.1 =
 * Addition of 'profile', 'profile_url' and 'other_notes' shortcodes.
 
-= 0.4 (2009/03/05) =
+= 0.4 =
 * Periodic updating of plugin information using WP-Cron.
 * Addition of 'screenshots' shortcode.
 * Addition of a nice meta box on the writing screen.
 * Better overall error handling.
 * More props to: Matt Martz.
 
-= 0.3 (2009/01/31) =
+= 0.3 =
 * A completely broken release :(
 
-= 0.2 (2009/01/20) =
+= 0.2 =
 * Additions and updates to several shortcode attributes.
 * Mad props to: Matt Martz & Kim Parsell.
 
-= 0.1 (2008/12/16) =
+= 0.1 =
 * Initial release.
 
