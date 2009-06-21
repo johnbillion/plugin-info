@@ -3,7 +3,7 @@
 Plugin Name:  Plugin Info
 Description:  Provides a simple way of displaying up-to-date information about specific WordPress Plugin Directory hosted plugins in your blog posts and pages.
 Plugin URI:   http://lud.icro.us/wordpress-plugin-info/
-Version:      0.6
+Version:      0.7
 Author:       John Blackbourn
 Author URI:   http://johnblackbourn.com/
 License:      GNU General Public License
@@ -19,38 +19,6 @@ Tested up to: 2.8
 	but WITHOUT ANY WARRANTY; without even the implied warranty of
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 	GNU General Public License for more details.
-
-Changelog:
-
-0.6     2009/03/25
-Shortcodes in the post meta box can now be clicked to insert them into your post.
-Addition of custom sub-headings contained in the 'other notes' section.
-
-0.5.1   2009/03/14
-Ensure all 'plugin info' posts are found in the update process.
-
-0.5     2009/03/11
-Matt Martz is in ur plugins fixin ur codes. (Hourly updates now work.)
-
-0.4.1   2009/03/06
-Addition of 'profile', 'profile_url' and 'other_notes' shortcodes.
-
-0.4     2009/03/05
-Periodic updating of plugin information using WP-Cron.
-Addition of 'screenshots' shortcode.
-Addition of a nice meta box on the writing screen.
-Better overall error handling.
-    More props to: Matt Martz.
-
-0.3     2009/01/31
-A completely broken release :(
-
-0.2     2009/01/20
-Additions and updates to several shortcode attributes.
-    Mad props to: Matt Martz & Kim Parsell.
-
-0.1     2008/12/16
-Initial release.
 
 */
 
@@ -109,6 +77,7 @@ class PluginInfo {
 			'installation'     => array( 'sections', 'installation' ),
 			'faq'              => array( 'sections', 'faq' ),
 			'screenshots'      => array( 'sections', 'screenshots' ),
+			'changelog'        => array( 'sections', 'changelog' ),
 			'other_notes'      => array( 'sections', 'other_notes' ),
 			'download_url'     => 'download_link',
 			'homepage_url'     => 'homepage',
@@ -151,6 +120,9 @@ class PluginInfo {
 			$info['author_name'] = $matches[1];
 		else
 			$info['author_name'] = $info['author'];
+
+		if ( isset( $info['changelog'] ) and preg_match( "|<h4>{$info['version']}</h4>(.*)|is", $info['changelog'], $matches ) )
+			$info['latest_change'] = trim( $matches[1] );
 
 		if ( isset( $info['other_notes'] ) and preg_match_all( '|<h3>([^<]+)</h3>|i', $info['other_notes'], $matches, PREG_SET_ORDER ) ) {
 			for ( $i = 0; isset( $matches[$i] ); $i++ ) {
@@ -227,7 +199,10 @@ class PluginInfo {
 		if ( wp_is_post_revision( $post_ID ) or wp_is_post_autosave( $post_ID ) )
 			return;
 
-		if ( !isset( $_POST['plugin_info'] ) ) {
+		if ( !isset( $_POST['plugin_info'] ) )
+			return;
+
+		if ( empty( $_POST['plugin_info'] ) ) {
 
 			delete_post_meta( $post_ID, 'plugin' );
 			delete_post_meta( $post_ID, 'plugin-info' );
@@ -416,6 +391,10 @@ class PluginInfo {
 				<dd class="howto">Link to author&rsquo;s wp.org profile</dd>
 				<dt>[plugin screenshots]</dt>
 				<dd class="howto">List of screenshots</dd>
+				<dt>[plugin changelog]</dt>
+				<dd class="howto">List of changelog entries</dd>
+				<dt>[plugin latest_change]</dt>
+				<dd class="howto">Latest changelog entry</dd>
 				<dt>[plugin other_notes]</dt>
 				<dd class="howto">Other notes</dd>
 			</dl>
