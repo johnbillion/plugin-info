@@ -75,6 +75,9 @@ The plugin information is collected from wp.org each time you save your post or 
 
 == Changelog ==
 
+= 0.7.2 =
+* Fixed WordPress 2.8 compatibility.
+
 = 0.7.1 =
 * Improvement to the [plugin latest_change] detection.
 
