@@ -1,8 +1,9 @@
 === Plugin Info ===
 Contributors: johnbillion, sivel
+Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=7338829
 Tags: plugin, info, data, utility, developer, meta, tool
 Requires at least: 2.7
-Tested up to: 2.8
+Tested up to: 2.8.4
 Stable tag: trunk
 
 Provides a simple way of displaying up-to-date information about specific WordPress Plugin Directory hosted plugins in your blog posts and pages.
