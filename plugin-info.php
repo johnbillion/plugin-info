@@ -3,12 +3,9 @@
 Plugin Name:  Plugin Info
 Description:  Provides a simple way of displaying up-to-date information about specific WordPress Plugin Directory hosted plugins in your blog posts and pages.
 Plugin URI:   http://lud.icro.us/wordpress-plugin-info/
-Version:      0.7.2
+Version:      0.7.3
 Author:       John Blackbourn
 Author URI:   http://johnblackbourn.com/
-License:      GNU General Public License
-Requires:     2.7
-Tested up to: 2.8
 
 	This program is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -111,7 +108,7 @@ class PluginInfo {
 		$info['profile']     = '<a href="' . $info['profile_url']  . '">%s</a>';
 
 		if ( isset( $info['screenshots'] ) )
-			$info['screenshots'] = preg_replace( "|src='([^\']+)'|i","src='{$info['link_url']}$1'", $info['screenshots'] );
+			$info['screenshots'] = preg_replace( "|src='[^http]([^\']+)'|i","src='{$info['link_url']}$1'", $info['screenshots'] );
 
 		if ( preg_match( '|href="([^"]+)"|i', $info['author'], $matches ) )
 			$info['author_url'] = $matches[1];
