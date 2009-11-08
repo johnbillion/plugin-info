@@ -3,7 +3,7 @@
 Plugin Name:  Plugin Info
 Description:  Provides a simple way of displaying up-to-date information about specific WordPress Plugin Directory hosted plugins in your blog posts and pages.
 Plugin URI:   http://lud.icro.us/wordpress-plugin-info/
-Version:      0.7.3
+Version:      0.7.4
 Author:       John Blackbourn
 Author URI:   http://johnblackbourn.com/
 
@@ -29,10 +29,9 @@ class PluginInfo {
 		add_action( 'admin_head',         array( &$this, 'admin_head' ) );
 		add_action( 'save_post',          array( &$this, 'save_plugin_info' ) );
 		add_action( 'update_plugin_info', array( &$this, 'update_plugin_info' ) );
-		add_filter( 'ozh_adminmenu_icon', array( &$this, 'ozh_adminmenu_icon' ) );
 		add_shortcode( 'plugin',          array( &$this, 'plugin_info_shortcode' ) );
 
-		register_activation_hook( __FILE__, array( &$this, 'activate' ) );
+		register_activation_hook( __FILE__,   array( &$this, 'activate' ) );
 		register_deactivation_hook( __FILE__, array( &$this, 'deactivate' ) );
 
 		$this->plugin = array(
@@ -49,36 +48,38 @@ class PluginInfo {
 
 		require_once( ABSPATH . 'wp-admin/includes/plugin-install.php' );
 
-		$info   = array();
-		$slug   = sanitize_title( $slug );
-		$plugin = plugins_api( 'plugin_information', array( 'slug' => $slug ) );
+		$info    = array();
+		$slug    = sanitize_title( $slug );
+		$plugin  = plugins_api( 'plugin_information', array( 'slug' => $slug ) );
+		$updates = get_preferred_from_update_core();
+		$latest  = $updates->current;
 
 		if ( !$plugin or is_wp_error( $plugin ) )
 			return false;
 
-		#die( '<pre>' . print_r( $plugin, true ) . '</pre>' );
-
 		$attributes = array(
-			'name'             => 'name',
-			'slug'             => 'slug',
-			'version'          => 'version',
-			'author'           => 'author',
-			'profile_url'      => 'author_profile',
-			'requires'         => 'requires',
-			'tested'           => 'tested',
-			'rating_raw'       => 'rating',
-			'downloaded_raw'   => 'downloaded',
-			'updated_raw'      => 'last_updated',
-			'num_ratings'      => 'num_ratings',
-			'description'      => array( 'sections', 'description' ),
-			'installation'     => array( 'sections', 'installation' ),
-			'faq'              => array( 'sections', 'faq' ),
-			'screenshots'      => array( 'sections', 'screenshots' ),
-			'changelog'        => array( 'sections', 'changelog' ),
-			'other_notes'      => array( 'sections', 'other_notes' ),
-			'download_url'     => 'download_link',
-			'homepage_url'     => 'homepage',
-			'tags'             => 'tags'
+			'name'           => 'name',
+			'slug'           => 'slug',
+			'version'        => 'version',
+			'author'         => 'author',
+			'profile_url'    => 'author_profile',
+			'contributors'   => 'contributors',
+			'requires'       => 'requires',
+			'tested'         => 'tested',
+			'compatibility'  => 'compatibility',
+			'rating_raw'     => 'rating',
+			'num_ratings'    => 'num_ratings',
+			'downloaded_raw' => 'downloaded',
+			'updated_raw'    => 'last_updated',
+			'homepage_url'   => 'homepage',
+			'description'    => array( 'sections', 'description' ),
+			'installation'   => array( 'sections', 'installation' ),
+			'screenshots'    => array( 'sections', 'screenshots' ),
+			'changelog'      => array( 'sections', 'changelog' ),
+			'faq'            => array( 'sections', 'faq' ),
+			'other_notes'    => array( 'sections', 'other_notes' ),
+			'download_url'   => 'download_link',
+			'tags'           => 'tags'
 		);
 
 		foreach ( $attributes as $name => $key ) {
@@ -92,8 +93,8 @@ class PluginInfo {
 					$info[$name] = $plugin->$key;
 			}
 
-			if ( isset( $info[$name] ) and is_array( $info[$name] ) )
-				$info[$name] = implode( ', ', $info[$name] );
+			#if ( isset( $info[$name] ) and is_array( $info[$name] ) )
+			#	$info[$name] = implode( ', ', $info[$name] );
 
 		}
 
@@ -106,6 +107,21 @@ class PluginInfo {
 		$info['homepage']    = '<a href="' . $info['homepage_url'] . '">%s</a>';
 		$info['link']        = '<a href="' . $info['link_url']     . '">%s</a>';
 		$info['profile']     = '<a href="' . $info['profile_url']  . '">%s</a>';
+		$info['compat_with'] = $latest;
+
+		if ( isset( $info['contributors'] ) ) {
+			foreach ( (array) $info['contributors'] as $name => $link )
+				$info['contributors'][$name] = '<a href="' . $link . '">' . $name . '</a>';
+			$info['contributors'] = implode( ', ', $info['contributors'] );
+		}
+
+		if ( isset( $info['compatibility'][$latest][$info['version']] ) ) {
+			$info['compatibility'] = $info['compatibility'][$latest][$info['version']][0] . '%';
+		} else {
+			$info['compatibility'] = __( 'Unknown', 'plugin_info' );
+		}
+		if ( isset( $info['tags'] ) )
+			$info['tags'] = implode( ', ', (array) $info['tags'] );
 
 		if ( isset( $info['screenshots'] ) )
 			$info['screenshots'] = preg_replace( "|src='[^http]([^\']+)'|i","src='{$info['link_url']}$1'", $info['screenshots'] );
@@ -251,7 +267,26 @@ class PluginInfo {
 
 		}
 
-		return $meta[$atts[0]];
+		/*
+		 * The `plugin_info_shortcode` filter below allows a plugin/theme
+		 * to format or otherwise modify the output of the shortcode.
+		 *
+		 * Example:
+		 *
+		 * function myfunction( $output, $attribute, $slug ) {
+		 * 	if ( 'screenshots' == $attribute ) {
+		 *   $output = str_replace( array( '<ol', '</ol' ), array( '<ul', '</ul' ), $output );
+		 *  }
+		 * 	return $output;
+		 * }
+		 * add_filter( 'plugin_info_shortcode', 'myfunction', 10, 3 );
+		 *
+		 * The above would modify the 'screenshots' output so the screenhots are
+		 * displayed in an unordered list instead of an ordered list.
+		 *
+		 */
+
+		return apply_filters( 'plugin_info_shortcode', $meta[$atts[0]], $atts[0], $meta['slug'] );
 
 	}
 
@@ -302,7 +337,7 @@ class PluginInfo {
 			#plugin_info_shortcodes dt {
 				float: left;
 				clear: left;
-				width: 50%;
+				width: 52%;
 				margin: 0px 1% 5px 0px;
 				cursor: pointer;
 			}
@@ -313,7 +348,7 @@ class PluginInfo {
 
 			#plugin_info_shortcodes dd {
 				float: left;
-				width: 49%;
+				width: 47%;
 				margin-bottom: 5px;
 			}
 
@@ -343,6 +378,8 @@ class PluginInfo {
 				<dd class="howto">Author&rsquo;s name</dd>
 				<dt>[plugin author_url]</dt>
 				<dd class="howto">Author&rsquo;s URL</dd>
+				<dt>[plugin compatibility]</dt>
+				<dd class="howto">Concensus on compatibility with latest WP version (% of people who say it works)</dd>
 				<dt>[plugin download_url]</dt>
 				<dd class="howto">URL of ZIP file</dd>
 				<dt>[plugin downloaded]</dt>
@@ -376,6 +413,8 @@ class PluginInfo {
 			<dl>
 				<dt>[plugin author]</dt>
 				<dd class="howto">Link to author&rsquo;s homepage</dd>
+				<dt>[plugin contributors]</dt>
+				<dd class="howto">List of contributors</dd>
 				<dt>[plugin description]</dt>
 				<dd class="howto">Long description</dd>
 				<dt>[plugin download]</dt>
@@ -422,12 +461,6 @@ class PluginInfo {
 			if ( strpos( $_SERVER['REQUEST_URI'], $file ) )
 				return true;
 		return false;
-	}
-
-	function ozh_adminmenu_icon( $hook ) {
-		if ( $hook == 'plugin_info' )
-			return $this->plugin['url'] . '/icon.png';
-		return $hook;
 	}
 
 	function activate() {

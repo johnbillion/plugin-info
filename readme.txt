@@ -62,19 +62,23 @@ This plugin is only going to be of use to you if:
 
 The majority of the available shortcodes can be seen from the post writing screen. Just click the '[show]' link in the 'Plugin Info' box.
 
-Please see http://lud.icro.us/wordpress-plugin-info/ for a definitive list of the available shortcodes. There are a few additional (less useful) shortcodes listed there.
+Please see http://lud.icro.us/wordpress-plugin-info/ for a definitive list of all the available shortcodes. There are a few additional (less useful) shortcodes listed there.
 
 Shortcodes which display a formatted hyperlink can have their default link text overridden by adding a 'text' parameter. For example: `[plugin homepage text='Homepage']` will display a link to the plugin homepage with the link text 'Homepage'.
 
 = The geek stuff =
 
-The plugin information is collected from wp.org each time you save your post or page. It is updated hourly using WordPress' cron system and uses the new Plugin API available in WordPress 2.7 (which is used mainly for browsing/downloading plugins from within WordPress). The plugin data is stored as an associative array in a custom field called 'plugin-info', and the plugin slug you enter is saved as a custom field called 'plugin'. For supergeeks, this means you can also access the plugin data using `get_post_meta()`, but I'll let you figure that out for yourself.
+The plugin information is collected from wp.org each time you save your post or page. It is updated hourly using WordPress' cron system and uses the Plugin API available in WordPress 2.7 or later. The plugin data is stored as an associative array in a custom field called 'plugin-info', and the plugin slug you enter is saved as a custom field called 'plugin'. For supergeeks, this means you can also access the plugin data using `get_post_meta()`, but I'll let you figure that out for yourself.
 
 == Screenshots ==
 
 1. Adding a plugin to a post. Remember to use the slug and not the name, as using the name isn't 100% reliable (you can try it though).
 
 == Changelog ==
+
+= 0.7.4 =
+* Support for the [plugin compatibility](http://wordpress.org/development/2009/10/plugin-compatibility-beta/) attribute.
+* Addition of a 'plugin_info_shortcode' filter so plugins/themes can format the shortcode output.
 
 = 0.7.3 =
 * Fixed absolute URLs for screenshots
