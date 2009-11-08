@@ -78,7 +78,7 @@ The plugin information is collected from wp.org each time you save your post or 
 
 = 0.7.4 =
 * Support for the [plugin compatibility](http://wordpress.org/development/2009/10/plugin-compatibility-beta/) attribute.
-* Addition of a 'plugin_info_shortcode' filter so plugins/themes can format the shortcode output.
+* Addition of a '<code>plugin_info_shortcode</code>' filter so plugins/themes can format the shortcode output.
 
 = 0.7.3 =
 * Fixed absolute URLs for screenshots
