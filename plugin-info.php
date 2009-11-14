@@ -3,7 +3,7 @@
 Plugin Name:  Plugin Info
 Description:  Provides a simple way of displaying up-to-date information about specific WordPress Plugin Directory hosted plugins in your blog posts and pages.
 Plugin URI:   http://lud.icro.us/wordpress-plugin-info/
-Version:      0.7.4
+Version:      0.7.5
 Author:       John Blackbourn
 Author URI:   http://johnblackbourn.com/
 
@@ -48,11 +48,9 @@ class PluginInfo {
 
 		require_once( ABSPATH . 'wp-admin/includes/plugin-install.php' );
 
-		$info    = array();
-		$slug    = sanitize_title( $slug );
-		$plugin  = plugins_api( 'plugin_information', array( 'slug' => $slug ) );
-		$updates = get_preferred_from_update_core();
-		$latest  = $updates->current;
+		$info   = array();
+		$slug   = sanitize_title( $slug );
+		$plugin = plugins_api( 'plugin_information', array( 'slug' => $slug ) );
 
 		if ( !$plugin or is_wp_error( $plugin ) )
 			return false;
@@ -93,9 +91,17 @@ class PluginInfo {
 					$info[$name] = $plugin->$key;
 			}
 
-			#if ( isset( $info[$name] ) and is_array( $info[$name] ) )
-			#	$info[$name] = implode( ', ', $info[$name] );
+		}
 
+		if ( is_array( $info['compatibility'] ) and !empty( $info['compatibility'] ) ) {
+			foreach ( $info['compatibility'] as $version => $compat ) {
+				$info['compat_with']   = $version;
+				$info['compatibility'] = $compat[$info['version']][0] . '%';
+				break;
+			}
+		} else {
+			$info['compatibility'] = __( 'Unknown', 'plugin_info' );
+			$info['compat_with']   = __( 'Unknown', 'plugin_info' );
 		}
 
 		$info['downloaded']  = number_format( $info['downloaded_raw'] );
@@ -107,7 +113,6 @@ class PluginInfo {
 		$info['homepage']    = '<a href="' . $info['homepage_url'] . '">%s</a>';
 		$info['link']        = '<a href="' . $info['link_url']     . '">%s</a>';
 		$info['profile']     = '<a href="' . $info['profile_url']  . '">%s</a>';
-		$info['compat_with'] = $latest;
 
 		if ( isset( $info['contributors'] ) ) {
 			foreach ( (array) $info['contributors'] as $name => $link )
@@ -115,11 +120,6 @@ class PluginInfo {
 			$info['contributors'] = implode( ', ', $info['contributors'] );
 		}
 
-		if ( isset( $info['compatibility'][$latest][$info['version']] ) ) {
-			$info['compatibility'] = $info['compatibility'][$latest][$info['version']][0] . '%';
-		} else {
-			$info['compatibility'] = __( 'Unknown', 'plugin_info' );
-		}
 		if ( isset( $info['tags'] ) )
 			$info['tags'] = implode( ', ', (array) $info['tags'] );
 
@@ -380,6 +380,8 @@ class PluginInfo {
 				<dd class="howto">Author&rsquo;s URL</dd>
 				<dt>[plugin compatibility]</dt>
 				<dd class="howto">Concensus on compatibility with latest WP version (% of people who say it works)</dd>
+				<dt>[plugin compat_with]</dt>
+				<dd class="howto">Version of WordPress used for the compatibility concensus</dd>
 				<dt>[plugin download_url]</dt>
 				<dd class="howto">URL of ZIP file</dd>
 				<dt>[plugin downloaded]</dt>
@@ -468,7 +470,7 @@ class PluginInfo {
 	}
 
 	function deactivate() {
-		wp_clear_scheduled_hook( 'update_plugin_info' );
+		#wp_clear_scheduled_hook( 'update_plugin_info' ); # This seems to be causing problems during auto upgrade
 	}
 
 }

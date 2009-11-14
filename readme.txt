@@ -76,6 +76,9 @@ The plugin information is collected from wp.org each time you save your post or 
 
 == Changelog ==
 
+= 0.7.5 =
+* Fix problems preventing some sites from updating the plugin info.
+
 = 0.7.4 =
 * Support for the [plugin compatibility](http://wordpress.org/development/2009/10/plugin-compatibility-beta/) attribute.
 * Addition of a '<code>plugin_info_shortcode</code>' filter so plugins/themes can format the shortcode output.
