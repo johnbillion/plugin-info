@@ -3,7 +3,7 @@ Contributors: johnbillion, sivel
 Donate link: http://lud.icro.us/donations/
 Tags: plugin, info, data, utility, developer, meta, tool
 Requires at least: 2.7
-Tested up to: 2.8.9
+Tested up to: 2.9.9
 Stable tag: trunk
 
 Provides a simple way of displaying up-to-date information about specific WordPress Plugin Directory hosted plugins in your blog posts and pages.
@@ -24,11 +24,11 @@ This plugin allows you to use shortcodes in your blog posts and pages which fetc
 
 This plugin uses WordPress shortcodes so it's ridiculously easy to include any information about a particular plugin in your post or page.
 
-This plugin has been downloaded `[plugin downloaded]` times!
+> This plugin has been downloaded `[plugin downloaded]` times!
 
 This will produce the following content in your blog post:
 
-This plugin has been downloaded 1,650 times!
+> This plugin has been downloaded 1,650 times!
 
 The download count will remain current without you having to touch your blog post again.
 
@@ -66,6 +66,16 @@ Please see http://lud.icro.us/wordpress-plugin-info/ for a definitive list of al
 
 Shortcodes which display a formatted hyperlink can have their default link text overridden by adding a 'text' parameter. For example: `[plugin homepage text='Homepage']` will display a link to the plugin homepage with the link text 'Homepage'.
 
+= Can I display plugin info outside of my blog posts? =
+
+Yes! You can use the `plugin_info()` function anywhere in your template. The function takes two parameters, the slug of your plugin and the attribute you'd like to display. The following example will display the last updated date for my User Switching plugin:
+
+`<?php plugin_info( 'user-switching', 'updated' ); ?>`
+
+You can also get the info rather than printing it out using the `get_plugin_info()` function:
+
+`<?php $updated = get_plugin_info( 'user-switching', 'updated' ); ?>`
+
 = The geek stuff =
 
 The plugin information is collected from wp.org each time you save your post or page. It is updated hourly using WordPress' cron system and uses the Plugin API available in WordPress 2.7 or later. The plugin data is stored as an associative array in a custom field called 'plugin-info', and the plugin slug you enter is saved as a custom field called 'plugin'. For supergeeks, this means you can also access the plugin data using `get_post_meta()`, but I'll let you figure that out for yourself.
@@ -75,6 +85,10 @@ The plugin information is collected from wp.org each time you save your post or 
 1. Adding a plugin to a post. Remember to use the slug and not the name, as using the name isn't 100% reliable (you can try it though).
 
 == Changelog ==
+
+= 0.7.6 =
+* Addition of a new <code>plugin_info()</code> template tag for displaying plugin info outside of your posts. Based on code by Melvin Ram.
+* Various code improvements including caching improvements by Matt Martz.
 
 = 0.7.5 =
 * Fix problems preventing some sites from updating the plugin info.
@@ -126,3 +140,7 @@ The plugin information is collected from wp.org each time you save your post or 
 = 0.1 =
 * Initial release.
 
+== Upgrade Notice ==
+
+= 0.7.6 =
+Maintenance release including addition of a new <code>plugin_info()</code> template tag and various code improvements.

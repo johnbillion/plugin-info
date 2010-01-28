@@ -3,7 +3,7 @@
 Plugin Name:  Plugin Info
 Description:  Provides a simple way of displaying up-to-date information about specific WordPress Plugin Directory hosted plugins in your blog posts and pages.
 Plugin URI:   http://lud.icro.us/wordpress-plugin-info/
-Version:      0.7.5
+Version:      0.7.6
 Author:       John Blackbourn
 Author URI:   http://johnblackbourn.com/
 
@@ -22,6 +22,7 @@ Author URI:   http://johnblackbourn.com/
 class PluginInfo {
 
 	var $plugin;
+	var $meta;
 
 	function PluginInfo() {
 
@@ -93,17 +94,12 @@ class PluginInfo {
 
 		}
 
-		if ( is_array( $info['compatibility'] ) and !empty( $info['compatibility'] ) ) {
-			foreach ( $info['compatibility'] as $version => $compat ) {
-				$info['compat_with']   = $version;
-				$info['compatibility'] = $compat[$info['version']][0] . '%';
-				break;
-			}
-		} else {
+		if ( is_array( $info['compatibility'] ) and !empty( $info['compatibility'][$GLOBALS['wp_version']] ) )
+			$info['compatibility'] = $info['compatibility'][$GLOBALS['wp_version']][$info['version']][0] . '%';
+		else
 			$info['compatibility'] = __( 'Unknown', 'plugin_info' );
-			$info['compat_with']   = __( 'Unknown', 'plugin_info' );
-		}
 
+		$info['compat_with'] = $GLOBALS['wp_version'];
 		$info['downloaded']  = number_format( $info['downloaded_raw'] );
 		$info['rating']      = ceil( 0.05 * $info['rating_raw'] );
 		$info['link_url']    = "http://wordpress.org/extend/plugins/{$info['slug']}/";
@@ -248,22 +244,26 @@ class PluginInfo {
 			'text' => ''
 		), $atts );
 
-		$meta = get_post_meta( $post->ID, 'plugin-info', true );
+		$att = $atts[0];
+		$key = $post->ID;
 
-		if ( !isset( $meta[$atts[0]] ) )
+		if ( empty( $this->meta[$key] ) )
+			$this->meta[$key] = get_post_meta( $post->ID, 'plugin-info', true );
+
+		if ( !isset( $this->meta[$key][$att] ) )
 			return '';
 
-		if ( false !== strpos( $meta[$atts[0]], '%s' ) ) {
+		if ( false !== strpos( $this->meta[$key][$att], '%s' ) ) {
 
 			$texts = array(
 				'download' => __( 'Download', 'plugin-info' ),
 				'homepage' => __( 'Visit plugin homepage', 'plugin-info' ),
-				'link'     => $meta['name'],
-				'profile'  => $meta['author_name']
+				'link'     => $this->meta[$key]['name'],
+				'profile'  => $this->meta[$key]['author_name']
 			);
 
-			$text = ( $atts['text'] ) ? $atts['text'] : $texts[$atts[0]];
-			$meta[$atts[0]] = str_replace( '%s', $text, $meta[$atts[0]] );
+			$text = ( $atts['text'] ) ? $atts['text'] : $texts[$att];
+			$this->meta[$key][$att] = str_replace( '%s', $text, $this->meta[$key][$att] );
 
 		}
 
@@ -286,7 +286,7 @@ class PluginInfo {
 		 *
 		 */
 
-		return apply_filters( 'plugin_info_shortcode', $meta[$atts[0]], $atts[0], $meta['slug'] );
+		return apply_filters( 'plugin_info_shortcode', $this->meta[$key][$att], $att, $this->meta[$key]['slug'] );
 
 	}
 
@@ -298,8 +298,7 @@ class PluginInfo {
 			jQuery(function($) {
 
 				$('#plugin_info_shortcodes').hide();
-				$('#plugin_info_show_shortcodes').show();
-				$('#plugin_info_show_shortcodes').click(function(){
+				$('#plugin_info_show_shortcodes').show().click(function(){
 					$('#plugin_info_shortcodes').toggle();
 					text = $('#plugin_info_shortcodes').is(':visible') ? '[ hide ]' : '[ show ]';
 					$(this).text(text);
@@ -325,9 +324,6 @@ class PluginInfo {
 
 			#plugin_info_shortcodes dl {
 				margin: 5px 5px 10px;
-			}
-
-			#plugin_info_shortcodes dl {
 				overflow: auto;
 				font-size: 0.9em;
 				border-bottom: 1px solid #dfdfdf;
@@ -473,6 +469,26 @@ class PluginInfo {
 		#wp_clear_scheduled_hook( 'update_plugin_info' ); # This seems to be causing problems during auto upgrade
 	}
 
+}
+
+function get_plugin_info( $slug, $attribute = 'version' ) {
+
+	global $plugininfo;
+
+	$slug = sanitize_title( $slug );
+
+	if ( empty( $plugininfo->meta[$slug] ) )
+		$plugininfo->meta[$slug] = $plugininfo->get_plugin_info( $slug );
+
+	if ( isset( $plugininfo->meta[$slug][$attribute] ) )
+		return $plugininfo->meta[$slug][$attribute];
+	else
+		return false;
+
+}
+
+function plugin_info( $slug, $attribute = 'version' ) {
+	echo get_plugin_info( $slug, $attribute );
 }
 
 load_plugin_textdomain( 'plugin_info', PLUGINDIR . '/' . dirname( plugin_basename( __FILE__ ) ), dirname( plugin_basename( __FILE__ ) ) ); # eugh
