@@ -3,7 +3,7 @@ Contributors: johnbillion, sivel
 Donate link: http://lud.icro.us/donations/
 Tags: plugin, info, data, utility, developer, meta, tool
 Requires at least: 2.7
-Tested up to: 2.9.9
+Tested up to: 3.0
 Stable tag: trunk
 
 Provides a simple way of displaying up-to-date information about specific WordPress Plugin Directory hosted plugins in your blog posts and pages.
