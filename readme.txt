@@ -86,6 +86,9 @@ The plugin information is collected from wp.org each time you save your post or 
 
 == Changelog ==
 
+= 0.7.7 =
+* Removed a PHP notice that was causing problems when WP_DEBUG was on.
+
 = 0.7.6 =
 * Addition of a new <code>plugin_info()</code> template tag for displaying plugin info outside of your posts. Based on code by Melvin Ram.
 * Various code improvements including caching improvements by Matt Martz.
@@ -141,6 +144,9 @@ The plugin information is collected from wp.org each time you save your post or 
 * Initial release.
 
 == Upgrade Notice ==
+
+= 0.7.7 =
+Removed a PHP notice that was causing problems when WP_DEBUG was on.
 
 = 0.7.6 =
 Maintenance release including addition of a new <code>plugin_info()</code> template tag and various code improvements.
