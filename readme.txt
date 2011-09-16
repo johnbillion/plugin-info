@@ -2,7 +2,7 @@
 Contributors: johnbillion, sivel
 Donate link: http://lud.icro.us/donations/
 Tags: plugin, info, data, utility, developer, meta, tool
-Requires at least: 2.7
+Requires at least: 2.8
 Tested up to: 3.2.1
 Stable tag: trunk
 
