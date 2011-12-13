@@ -3,19 +3,19 @@
 Plugin Name:  Plugin Info
 Description:  Provides a simple way of displaying up-to-date information about specific WordPress Plugin Directory hosted plugins in your blog posts and pages.
 Plugin URI:   http://lud.icro.us/wordpress-plugin-info/
-Version:      0.7.7
+Version:      0.7.8
 Author:       John Blackbourn
 Author URI:   http://johnblackbourn.com/
 
-	This program is free software; you can redistribute it and/or modify
-	it under the terms of the GNU General Public License as published by
-	the Free Software Foundation; either version 2 of the License, or
-	(at your option) any later version.
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
 
-	This program is distributed in the hope that it will be useful,
-	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	GNU General Public License for more details.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 */
 
@@ -24,16 +24,16 @@ class PluginInfo {
 	var $plugin;
 	var $meta;
 
-	function PluginInfo() {
+	function __construct() {
 
-		add_action( 'admin_menu',         array( &$this, 'admin_menu' ) );
-		add_action( 'admin_head',         array( &$this, 'admin_head' ) );
-		add_action( 'save_post',          array( &$this, 'save_plugin_info' ) );
-		add_action( 'update_plugin_info', array( &$this, 'update_plugin_info' ) );
-		add_shortcode( 'plugin',          array( &$this, 'plugin_info_shortcode' ) );
+		add_action( 'admin_menu',         array( $this, 'admin_menu' ) );
+		add_action( 'admin_head',         array( $this, 'admin_head' ) );
+		add_action( 'save_post',          array( $this, 'save_plugin_info' ) );
+		add_action( 'update_plugin_info', array( $this, 'update_plugin_info' ) );
+		add_shortcode( 'plugin',          array( $this, 'plugin_info_shortcode' ) );
 
-		register_activation_hook( __FILE__,   array( &$this, 'activate' ) );
-		register_deactivation_hook( __FILE__, array( &$this, 'deactivate' ) );
+		register_activation_hook( __FILE__,   array( $this, 'activate' ) );
+		register_deactivation_hook( __FILE__, array( $this, 'deactivate' ) );
 
 		$this->plugin = array(
 			'url' => WP_PLUGIN_URL . '/' . basename( dirname( __FILE__ ) ),
@@ -300,7 +300,7 @@ class PluginInfo {
 				$('#plugin_info_shortcodes').hide();
 				$('#plugin_info_show_shortcodes').show().click(function(){
 					$('#plugin_info_shortcodes').toggle();
-					text = $('#plugin_info_shortcodes').is(':visible') ? '[ hide ]' : '[ show ]';
+					text = $('#plugin_info_shortcodes').is(':visible') ? '<?php esc_js( _e( '[ hide ]', 'plugin_info' ) ); ?>' : '<?php esc_js( _e( '[ show ]', 'plugin_info' ) ); ?>';
 					$(this).text(text);
 					return false;
 				});
@@ -345,7 +345,7 @@ class PluginInfo {
 			#plugin_info_shortcodes dd {
 				float: left;
 				width: 47%;
-				margin-bottom: 5px;
+				margin: 0 0 5px 0;
 			}
 
 			#plugin_info_show_shortcodes {
@@ -368,72 +368,72 @@ class PluginInfo {
 		<p class="howto"><?php _e( 'To display information about a plugin, you should use one of the shortcodes below.', 'plugin_info' ); ?></p>
 		<?php # @TODO: i18n on this list: ?>
 		<div id="plugin_info_shortcodes">
-			<p>Plain info:</p>
+			<p><?php _e( 'Plain info:', 'plugin_info' ); ?></p>
 			<dl>
 				<dt>[plugin author_name]</dt>
-				<dd class="howto">Author&rsquo;s name</dd>
+				<dd class="howto"><?php _e( 'Author&rsquo;s name', 'plugin_info' ); ?></dd>
 				<dt>[plugin author_url]</dt>
-				<dd class="howto">Author&rsquo;s URL</dd>
+				<dd class="howto"><?php _e( 'Author&rsquo;s URL', 'plugin_info' ); ?></dd>
 				<dt>[plugin compatibility]</dt>
-				<dd class="howto">Concensus on compatibility with latest WP version (% of people who say it works)</dd>
+				<dd class="howto"><?php _e( 'Concensus on compatibility with latest WP version (% of people who say it works)', 'plugin_info' ); ?></dd>
 				<dt>[plugin compat_with]</dt>
-				<dd class="howto">Version of WordPress used for the compatibility concensus</dd>
+				<dd class="howto"><?php _e( 'Version of WordPress used for the compatibility concensus', 'plugin_info' ); ?></dd>
 				<dt>[plugin download_url]</dt>
-				<dd class="howto">URL of ZIP file</dd>
+				<dd class="howto"><?php _e( 'URL of ZIP file', 'plugin_info' ); ?></dd>
 				<dt>[plugin downloaded]</dt>
-				<dd class="howto">Download count</dd>
+				<dd class="howto"><?php _e( 'Download count', 'plugin_info' ); ?></dd>
 				<dt>[plugin homepage_url]</dt>
-				<dd class="howto">URL of homepage</dd>
+				<dd class="howto"><?php _e( 'URL of homepage', 'plugin_info' ); ?></dd>
 				<dt>[plugin link_url]</dt>
-				<dd class="howto">URL of wp.org page</dd>
+				<dd class="howto"><?php _e( 'URL of wp.org page', 'plugin_info' ); ?></dd>
 				<dt>[plugin name]</dt>
-				<dd class="howto">Name</dd>
+				<dd class="howto"><?php _e( 'Name', 'plugin_info' ); ?></dd>
 				<dt>[plugin profile_url]</dt>
-				<dd class="howto">URL of author&rsquo;s wp.org profile</dd>
+				<dd class="howto"><?php _e( 'URL of author&rsquo;s wp.org profile', 'plugin_info' ); ?></dd>
 				<dt>[plugin requires]</dt>
-				<dd class="howto">&rsquo;Requires at least&lsquo; version number</dd>
+				<dd class="howto"><?php _e( '&rsquo;Requires at least&lsquo; version number', 'plugin_info' ); ?></dd>
 				<dt>[plugin rating]</dt>
-				<dd class="howto">Rating out of 5</dd>
+				<dd class="howto"><?php _e( 'Rating out of 5', 'plugin_info' ); ?></dd>
 				<dt>[plugin slug]</dt>
-				<dd class="howto">Slug</dd>
+				<dd class="howto"><?php _e( 'Slug', 'plugin_info' ); ?></dd>
 				<dt>[plugin tags]</dt>
-				<dd class="howto">List of tags</dd>
+				<dd class="howto"><?php _e( 'List of tags', 'plugin_info' ); ?></dd>
 				<dt>[plugin tested]</dt>
-				<dd class="howto">&rsquo;Tested up to&lsquo; version number</dd>
+				<dd class="howto"><?php _e( '&rsquo;Tested up to&lsquo; version number', 'plugin_info' ); ?></dd>
 				<dt>[plugin updated_ago]</dt>
-				<dd class="howto">Last updated ago (hours/days/weeks)</dd>
+				<dd class="howto"><?php _e( 'Last updated ago (hours/days/weeks)', 'plugin_info' ); ?></dd>
 				<dt>[plugin updated]</dt>
-				<dd class="howto">Last updated date</dd>
+				<dd class="howto"><?php _e( 'Last updated date', 'plugin_info' ); ?></dd>
 				<dt>[plugin version]</dt>
-				<dd class="howto">Version number</dd>
+				<dd class="howto"><?php _e( 'Version number', 'plugin_info' ); ?></dd>
 			</dl>
-			<p>Formatted info:</p>
+			<p><?php _e( 'Formatted info:', 'plugin_info' ); ?></p>
 			<dl>
 				<dt>[plugin author]</dt>
-				<dd class="howto">Link to author&rsquo;s homepage</dd>
+				<dd class="howto"><?php _e( 'Link to author&rsquo;s homepage', 'plugin_info' ); ?></dd>
 				<dt>[plugin contributors]</dt>
-				<dd class="howto">List of contributors</dd>
+				<dd class="howto"><?php _e( 'List of contributors', 'plugin_info' ); ?></dd>
 				<dt>[plugin description]</dt>
-				<dd class="howto">Long description</dd>
+				<dd class="howto"><?php _e( 'Long description', 'plugin_info' ); ?></dd>
 				<dt>[plugin download]</dt>
-				<dd class="howto">Link to ZIP file</dd>
+				<dd class="howto"><?php _e( 'Link to ZIP file', 'plugin_info' ); ?></dd>
 				<dt>[plugin homepage]</dt>
-				<dd class="howto">Link to homepage</dd>
+				<dd class="howto"><?php _e( 'Link to homepage', 'plugin_info' ); ?></dd>
 				<dt>[plugin link]</dt>
-				<dd class="howto">Link to wp.org page</dd>
+				<dd class="howto"><?php _e( 'Link to wp.org page', 'plugin_info' ); ?></dd>
 				<dt>[plugin profile]</dt>
-				<dd class="howto">Link to author&rsquo;s wp.org profile</dd>
+				<dd class="howto"><?php _e( 'Link to author&rsquo;s wp.org profile', 'plugin_info' ); ?></dd>
 				<dt>[plugin screenshots]</dt>
-				<dd class="howto">List of screenshots</dd>
+				<dd class="howto"><?php _e( 'List of screenshots', 'plugin_info' ); ?></dd>
 				<dt>[plugin changelog]</dt>
-				<dd class="howto">List of changelog entries</dd>
+				<dd class="howto"><?php _e( 'List of changelog entries', 'plugin_info' ); ?></dd>
 				<dt>[plugin latest_change]</dt>
-				<dd class="howto">Latest changelog entry</dd>
+				<dd class="howto"><?php _e( 'Latest changelog entry', 'plugin_info' ); ?></dd>
 				<dt>[plugin other_notes]</dt>
-				<dd class="howto">Other notes</dd>
+				<dd class="howto"><?php _e( 'Other notes', 'plugin_info' ); ?></dd>
 			</dl>
 		</div>
-		<p><a href="#" id="plugin_info_show_shortcodes">[ show ]</a></p>
+		<p><a href="#" id="plugin_info_show_shortcodes"><?php _e( '[ show ]', 'plugin_info' ); ?></a></p>
 		<?php
 	}
 
@@ -441,14 +441,14 @@ class PluginInfo {
 		add_meta_box(
 			'plugininfo',
 			__( 'Plugin Info', 'plugin_info' ),
-			array( &$this, 'meta_box' ),
+			array( $this, 'meta_box' ),
 			'post',
 			'side'
 		);
 		add_meta_box(
 			'plugininfo',
 			__( 'Plugin Info', 'plugin_info' ),
-			array( &$this, 'meta_box' ),
+			array( $this, 'meta_box' ),
 			'page',
 			'side'
 		);
@@ -491,8 +491,8 @@ function plugin_info( $slug, $attribute = 'version' ) {
 	echo get_plugin_info( $slug, $attribute );
 }
 
-load_plugin_textdomain( 'plugin_info', PLUGINDIR . '/' . dirname( plugin_basename( __FILE__ ) ), dirname( plugin_basename( __FILE__ ) ) ); # eugh
+load_plugin_textdomain( 'plugin_info', false, dirname( plugin_basename( __FILE__ ) ) );
 
-$plugininfo = new PluginInfo();
+$plugininfo = new PluginInfo;
 
 ?>

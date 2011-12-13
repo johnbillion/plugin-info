@@ -3,7 +3,7 @@ Contributors: johnbillion, sivel
 Donate link: http://lud.icro.us/donations/
 Tags: plugin, info, data, utility, developer, meta, tool
 Requires at least: 2.8
-Tested up to: 3.2.1
+Tested up to: 3.3
 Stable tag: trunk
 
 Provides a simple way of displaying up-to-date information about specific WordPress Plugin Directory hosted plugins in your blog posts and pages.
@@ -86,6 +86,10 @@ The plugin information is collected from wp.org each time you save your post or 
 
 == Changelog ==
 
+= 0.7.8 =
+* Small UI fix for WordPress 3.3.
+* Add some missing l10n.
+
 = 0.7.7 =
 * Removed a PHP notice that was causing problems when WP_DEBUG was on.
 
@@ -144,6 +148,9 @@ The plugin information is collected from wp.org each time you save your post or 
 * Initial release.
 
 == Upgrade Notice ==
+
+= 0.7.8 =
+* Small UI fix for WordPress 3.3.
 
 = 0.7.7 =
 Removed a PHP notice that was causing problems when WP_DEBUG was on.
