@@ -3,7 +3,7 @@
 Plugin Name:  Plugin Info
 Description:  Provides a simple way of displaying up-to-date information about specific WordPress Plugin Directory hosted plugins in your blog posts and pages.
 Plugin URI:   http://lud.icro.us/wordpress-plugin-info/
-Version:      0.7.8
+Version:      0.7.9
 Author:       John Blackbourn
 Author URI:   http://johnblackbourn.com/
 
@@ -224,10 +224,8 @@ class PluginInfo {
 			if ( !$plugin_info )
 				return false; # @TODO: display error msg?
 
-			if ( !update_post_meta( $post_ID, 'plugin', $plugin ) )
-				add_post_meta( $post_ID, 'plugin', $plugin );
-			if ( !update_post_meta( $post_ID, 'plugin-info', $plugin_info ) )
-				add_post_meta( $post_ID, 'plugin-info', $plugin_info );
+			update_post_meta( $post_ID, 'plugin', $plugin );
+			update_post_meta( $post_ID, 'plugin-info', $plugin_info );
 
 		}
 
@@ -366,7 +364,6 @@ class PluginInfo {
 		<label for="plugin_info"><?php _e( 'Plugin slug:', 'plugin_info' ); ?></label>
 		<input type="text" name="plugin_info" id="plugin_info" value="<?php esc_attr_e( get_post_meta( $post->ID, 'plugin', true ) ); ?>" />
 		<p class="howto"><?php _e( 'To display information about a plugin, you should use one of the shortcodes below.', 'plugin_info' ); ?></p>
-		<?php # @TODO: i18n on this list: ?>
 		<div id="plugin_info_shortcodes">
 			<p><?php _e( 'Plain info:', 'plugin_info' ); ?></p>
 			<dl>
@@ -415,6 +412,10 @@ class PluginInfo {
 				<dd class="howto"><?php _e( 'List of contributors', 'plugin_info' ); ?></dd>
 				<dt>[plugin description]</dt>
 				<dd class="howto"><?php _e( 'Long description', 'plugin_info' ); ?></dd>
+				<dt>[plugin installation]</dt>
+				<dd class="howto"><?php _e( 'Installation directions', 'plugin_info' ); ?></dd>
+				<dt>[plugin faq]</dt>
+				<dd class="howto"><?php _e( 'List of FAQs', 'plugin_info' ); ?></dd>
 				<dt>[plugin download]</dt>
 				<dd class="howto"><?php _e( 'Link to ZIP file', 'plugin_info' ); ?></dd>
 				<dt>[plugin homepage]</dt>
