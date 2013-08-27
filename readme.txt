@@ -1,9 +1,8 @@
 === Plugin Info ===
 Contributors: johnbillion, sivel
-Donate link: http://lud.icro.us/donations/
 Tags: plugin, info, data, utility, developer, meta, tool
 Requires at least: 2.8
-Tested up to: 3.3
+Tested up to: 3.6
 Stable tag: trunk
 
 Provides a simple way of displaying up-to-date information about specific WordPress Plugin Directory hosted plugins in your blog posts and pages.
@@ -34,20 +33,24 @@ The download count will remain current without you having to touch your blog pos
 
 == Installation ==
 
-This plugin only works with WordPress 2.7 or later. Earlier versions of WordPress did not include the necessary Plugin API for the plugin to function.
+You can install this plugin directly from your WordPress dashboard:
 
-1. Unzip the ZIP file and drop the folder straight into your wp-content/plugins directory.
-2. Activate the plugin through the 'Plugins' menu in WordPress.
-3. Now read the usage guidelines below.
+ 1. Go to the *Plugins* menu and click *Add New*.
+ 2. Search for *Plugin Info*.
+ 3. Click *Install Now* next to the Plugin Info plugin.
+ 4. Activate the plugin.
+ 5. Now read the usage guidelines below.
+
+Alternatively, see the guide to [Manually Installing Plugins](http://codex.wordpress.org/Managing_Plugins#Manual_Plugin_Installation).
 
 = Usage =
 
 1. Write a new blog post or page, or open an existing post or page for editing.
-2. In the 'Plugin Info' box on that screen, type the slug of the plugin (see [screenshot #1](http://wordpress.org/extend/plugins/plugin-info/screenshots/)). The plugin slug is the last part of the URL of the plugin's page on wordpress.org.
+2. In the 'Plugin Info' box on that screen, type the slug of the plugin (see [screenshot #1](http://wordpress.org/plugins/plugin-info/screenshots/)). The plugin slug is the last part of the URL of the plugin's page on wordpress.org.
 3. Add a shortcode to your blog entry like this: `[plugin version]` and save the post. (That's the word 'plugin' and not the slug of the plugin by the way).
 4. Take a look at your post and the version number of the plugin will be displayed.
 
-For a definitive list of all the shortcodes you can use, see the [FAQ page](http://wordpress.org/extend/plugins/plugin-info/faq/).
+For a complete list of all the shortcodes you can use, see the [FAQ page](http://wordpress.org/plugins/plugin-info/faq/).
 
 == Frequently Asked Questions ==
 
@@ -62,7 +65,7 @@ This plugin is only going to be of use to you if:
 
 The majority of the available shortcodes can be seen from the post writing screen. Just click the '[show]' link in the 'Plugin Info' box.
 
-Please see http://lud.icro.us/wordpress-plugin-info/ for a definitive list of all the available shortcodes. There are a few additional (less useful) shortcodes listed there.
+Please see http://lud.icro.us/wordpress-plugin-info/ for a complete list of all the available shortcodes. There are a few additional (less useful) shortcodes listed there.
 
 Shortcodes which display a formatted hyperlink can have their default link text overridden by adding a 'text' parameter. For example: `[plugin homepage text='Homepage']` will display a link to the plugin homepage with the link text 'Homepage'.
 
@@ -84,7 +87,15 @@ The plugin information is collected from wp.org each time you save your post or 
 
 1. Adding a plugin to a post. Remember to use the slug and not the name, as using the name isn't 100% reliable (you can try it though).
 
+== Upgrade Notice ==
+
+= 0.8 =
+* Update the URL of plugins in the repo.
+
 == Changelog ==
+
+= 0.8 =
+* Update the URL of plugins in the repo.
 
 = 0.7.8 =
 * Small UI fix for WordPress 3.3.
@@ -146,14 +157,3 @@ The plugin information is collected from wp.org each time you save your post or 
 
 = 0.1 =
 * Initial release.
-
-== Upgrade Notice ==
-
-= 0.7.8 =
-* Small UI fix for WordPress 3.3.
-
-= 0.7.7 =
-Removed a PHP notice that was causing problems when WP_DEBUG was on.
-
-= 0.7.6 =
-Maintenance release including addition of a new <code>plugin_info()</code> template tag and various code improvements.
