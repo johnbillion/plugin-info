@@ -3,9 +3,14 @@
 Plugin Name:  Plugin Info
 Description:  Provides a simple way of displaying up-to-date information about specific WordPress Plugin Directory hosted plugins in your blog posts and pages.
 Plugin URI:   http://lud.icro.us/wordpress-plugin-info/
-Version:      0.7.9
+Version:      0.8
 Author:       John Blackbourn
 Author URI:   http://johnblackbourn.com/
+Text Domain:  plugin_info
+Domain Path:  /languages/
+License:      GPL v2 or later
+
+Copyright © 2013 John Blackbourn
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -24,16 +29,16 @@ class PluginInfo {
 	var $plugin;
 	var $meta;
 
-	function __construct() {
+	public function __construct() {
 
+		add_action( 'init',               array( $this, 'init' ) );
 		add_action( 'admin_menu',         array( $this, 'admin_menu' ) );
 		add_action( 'admin_head',         array( $this, 'admin_head' ) );
 		add_action( 'save_post',          array( $this, 'save_plugin_info' ) );
 		add_action( 'update_plugin_info', array( $this, 'update_plugin_info' ) );
 		add_shortcode( 'plugin',          array( $this, 'plugin_info_shortcode' ) );
 
-		register_activation_hook( __FILE__,   array( $this, 'activate' ) );
-		register_deactivation_hook( __FILE__, array( $this, 'deactivate' ) );
+		register_activation_hook( __FILE__, array( $this, 'activate' ) );
 
 		$this->plugin = array(
 			'url' => WP_PLUGIN_URL . '/' . basename( dirname( __FILE__ ) ),
@@ -42,12 +47,16 @@ class PluginInfo {
 
 	}
 
-	function get_plugin_info( $slug = null ) {
+	public function init() {
+		load_plugin_textdomain( 'plugin_info', false, dirname( plugin_basename( __FILE__ ) ) );
+	}
+
+	public function get_plugin_info( $slug = null ) {
 
 		if ( !$slug )
 			return false;
 
-		require_once( ABSPATH . 'wp-admin/includes/plugin-install.php' );
+		require_once ABSPATH . 'wp-admin/includes/plugin-install.php';
 
 		$info   = array();
 		$slug   = sanitize_title( $slug );
@@ -102,7 +111,7 @@ class PluginInfo {
 		$info['compat_with'] = $GLOBALS['wp_version'];
 		$info['downloaded']  = number_format( $info['downloaded_raw'] );
 		$info['rating']      = ceil( 0.05 * $info['rating_raw'] );
-		$info['link_url']    = "http://wordpress.org/extend/plugins/{$info['slug']}/";
+		$info['link_url']    = "http://wordpress.org/plugins/{$info['slug']}/";
 		$info['updated']     = date( get_option('date_format'), strtotime( $info['updated_raw'] ) );
 		$info['updated_ago'] = sprintf( __('%s ago'), human_time_diff( strtotime( $info['updated_raw'] ) ) );
 		$info['download']    = '<a href="' . $info['download_url'] . '">%s</a>';
@@ -182,7 +191,7 @@ class PluginInfo {
 
 	}
 
-	function update_plugin_info() {
+	public function update_plugin_info() {
 
 		$q = new WP_Query;
 
@@ -203,7 +212,7 @@ class PluginInfo {
 
 	}
 
-	function save_plugin_info( $post_ID ) {
+	public function save_plugin_info( $post_ID ) {
 
 		if ( wp_is_post_revision( $post_ID ) or wp_is_post_autosave( $post_ID ) )
 			return;
@@ -233,7 +242,7 @@ class PluginInfo {
 
 	}
 
-	function plugin_info_shortcode( $atts ) {
+	public function plugin_info_shortcode( $atts ) {
 
 		global $post;
 
@@ -288,8 +297,8 @@ class PluginInfo {
 
 	}
 
-	function admin_head() {
-		if ( $this->is_post_writing_screen() ) {
+	public function admin_head() {
+		if ( self::is_post_writing_screen() ) {
 		?>
 		<script type="text/javascript"><!--
 
@@ -332,7 +341,7 @@ class PluginInfo {
 				float: left;
 				clear: left;
 				width: 52%;
-				margin: 0px 1% 5px 0px;
+				margin: 0 1% 5px 0;
 				cursor: pointer;
 			}
 
@@ -359,7 +368,7 @@ class PluginInfo {
 		}
 	}
 
-	function meta_box( $post ) {
+	public function meta_box( $post ) {
 		?>
 		<label for="plugin_info"><?php _e( 'Plugin slug:', 'plugin_info' ); ?></label>
 		<input type="text" name="plugin_info" id="plugin_info" value="<?php esc_attr_e( get_post_meta( $post->ID, 'plugin', true ) ); ?>" />
@@ -438,7 +447,7 @@ class PluginInfo {
 		<?php
 	}
 
-	function admin_menu() {
+	public function admin_menu() {
 		add_meta_box(
 			'plugininfo',
 			__( 'Plugin Info', 'plugin_info' ),
@@ -455,19 +464,16 @@ class PluginInfo {
 		);
 	}
 
-	function is_post_writing_screen() {
+	public static function is_post_writing_screen() {
 		foreach ( array( 'post.php', 'post-new.php', 'page.php', 'page-new.php' ) as $file )
 			if ( strpos( $_SERVER['REQUEST_URI'], $file ) )
 				return true;
 		return false;
 	}
 
-	function activate() {
-		wp_schedule_event( time(), 'hourly', 'update_plugin_info' );
-	}
-
-	function deactivate() {
-		#wp_clear_scheduled_hook( 'update_plugin_info' ); # This seems to be causing problems during auto upgrade
+	public function activate() {
+		if ( !wp_next_scheduled( 'update_plugin_info' ) )
+			wp_schedule_event( time(), 'hourly', 'update_plugin_info' );
 	}
 
 }
@@ -492,8 +498,4 @@ function plugin_info( $slug, $attribute = 'version' ) {
 	echo get_plugin_info( $slug, $attribute );
 }
 
-load_plugin_textdomain( 'plugin_info', false, dirname( plugin_basename( __FILE__ ) ) );
-
 $plugininfo = new PluginInfo;
-
-?>
