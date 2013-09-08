@@ -1,7 +1,7 @@
 === Plugin Info ===
 Contributors: johnbillion, sivel
 Tags: plugin, info, data, utility, developer, meta, tool
-Requires at least: 2.8
+Requires at least: 3.4
 Tested up to: 3.6
 Stable tag: trunk
 
@@ -85,14 +85,17 @@ The plugin information is collected from wp.org each time you save your post or 
 
 == Screenshots ==
 
-1. Adding a plugin to a post. Remember to use the slug and not the name, as using the name isn't 100% reliable (you can try it though).
+1. Adding a plugin to a post. Remember to use the slug and not the name, as using the name isn't 100% reliable.
 
 == Upgrade Notice ==
 
-= 0.8 =
-* Update the URL of plugins in the repo.
+= 0.8.1 =
+* Add support for the new [plugin donate] attribute and add some missing i18n.
 
 == Changelog ==
+
+= 0.8.1 =
+* Add support for the new [plugin donate] attribute and add some missing i18n.
 
 = 0.8 =
 * Update the URL of plugins in the repo.
