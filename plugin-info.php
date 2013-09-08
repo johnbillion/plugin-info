@@ -3,7 +3,7 @@
 Plugin Name:  Plugin Info
 Description:  Provides a simple way of displaying up-to-date information about specific WordPress Plugin Directory hosted plugins in your blog posts and pages.
 Plugin URI:   http://lud.icro.us/wordpress-plugin-info/
-Version:      0.8
+Version:      0.8.1
 Author:       John Blackbourn
 Author URI:   http://johnblackbourn.com/
 Text Domain:  plugin_info
@@ -26,28 +26,28 @@ GNU General Public License for more details.
 
 class PluginInfo {
 
-	var $plugin;
-	var $meta;
+	public $plugin;
+	public $meta;
 
 	public function __construct() {
 
-		add_action( 'init',               array( $this, 'init' ) );
-		add_action( 'admin_menu',         array( $this, 'admin_menu' ) );
-		add_action( 'admin_head',         array( $this, 'admin_head' ) );
-		add_action( 'save_post',          array( $this, 'save_plugin_info' ) );
-		add_action( 'update_plugin_info', array( $this, 'update_plugin_info' ) );
-		add_shortcode( 'plugin',          array( $this, 'plugin_info_shortcode' ) );
+		add_action( 'init',               array( $this, 'action_init' ) );
+		add_action( 'admin_menu',         array( $this, 'action_admin_menu' ) );
+		add_action( 'admin_head',         array( $this, 'action_admin_head' ) );
+		add_action( 'save_post',          array( $this, 'action_save_post' ) );
+		add_action( 'update_plugin_info', array( $this, 'action_update_plugin_info' ) );
+		add_action( 'admin_init',         array( $this, 'action_admin_init' ) );
 
-		register_activation_hook( __FILE__, array( $this, 'activate' ) );
+		add_shortcode( 'plugin',          array( $this, 'shortcode_plugin_info' ) );
 
 		$this->plugin = array(
-			'url' => WP_PLUGIN_URL . '/' . basename( dirname( __FILE__ ) ),
-			'dir' => WP_PLUGIN_DIR . '/' . basename( dirname( __FILE__ ) )
+			'url' => plugin_dir_url( __FILE__ ),
+			'dir' => plugin_dir_path( __FILE__ ),
 		);
 
 	}
 
-	public function init() {
+	public function action_init() {
 		load_plugin_textdomain( 'plugin_info', false, dirname( plugin_basename( __FILE__ ) ) );
 	}
 
@@ -87,7 +87,8 @@ class PluginInfo {
 			'faq'            => array( 'sections', 'faq' ),
 			'other_notes'    => array( 'sections', 'other_notes' ),
 			'download_url'   => 'download_link',
-			'tags'           => 'tags'
+			'donate_url'     => 'donate_link',
+			'tags'           => 'tags',
 		);
 
 		foreach ( $attributes as $name => $key ) {
@@ -109,15 +110,18 @@ class PluginInfo {
 			$info['compatibility'] = __( 'Unknown', 'plugin_info' );
 
 		$info['compat_with'] = $GLOBALS['wp_version'];
-		$info['downloaded']  = number_format( $info['downloaded_raw'] );
+		$info['downloaded']  = number_format_i18n( $info['downloaded_raw'] );
 		$info['rating']      = ceil( 0.05 * $info['rating_raw'] );
 		$info['link_url']    = "http://wordpress.org/plugins/{$info['slug']}/";
-		$info['updated']     = date( get_option('date_format'), strtotime( $info['updated_raw'] ) );
+		$info['updated']     = date_i18n( get_option('date_format'), strtotime( $info['updated_raw'] ) );
 		$info['updated_ago'] = sprintf( __('%s ago'), human_time_diff( strtotime( $info['updated_raw'] ) ) );
 		$info['download']    = '<a href="' . $info['download_url'] . '">%s</a>';
 		$info['homepage']    = '<a href="' . $info['homepage_url'] . '">%s</a>';
 		$info['link']        = '<a href="' . $info['link_url']     . '">%s</a>';
 		$info['profile']     = '<a href="' . $info['profile_url']  . '">%s</a>';
+
+		if ( isset( $info['donate_url'] ) )
+			$info['donate'] = '<a href="' . $info['donate_url'] . '">%s</a>';
 
 		if ( isset( $info['contributors'] ) ) {
 			foreach ( (array) $info['contributors'] as $name => $link )
@@ -165,33 +169,33 @@ class PluginInfo {
 		 *
 		 * Example 1:
 		 *
-		 * function myfunction( $info ) {
+		 * function myfunction( $info, $slug, $plugin ) {
 		 * 	$info['fullname'] = $info['name'] . ' v' . $info['version'];
 		 * 	return $info;
 		 * }
-		 * add_filter( 'plugin_info', 'myfunction' );
+		 * add_filter( 'plugin_info', 'myfunction', 10, 3 );
 		 *
 		 * The above code would create a `[plugin fullname]` shortcode which
 		 * would return something like `My Wonderful Plugin v1.0`
 		 *
 		 * Example 2:
 		 *
-		 * function myfunction( $info ) {
+		 * function myfunction( $info, $slug, $plugin ) {
 		 * 	$info['requires'] = 'Requires at least WordPress version ' . $info['requires'];
 		 * 	return $info;
 		 * }
-		 * add_filter( 'plugin_info', 'myfunction' );
+		 * add_filter( 'plugin_info', 'myfunction', 10, 3 );
 		 *
 		 * The above would modify the `[plugin requires]` shortcode so it returns
 		 * a full sentence explaining the minimum WP version requirement.
 		 *
 		 */
 
-		return apply_filters( 'plugin_info', $info );
+		return apply_filters( 'plugin_info', $info, $slug, $plugin );
 
 	}
 
-	public function update_plugin_info() {
+	public function action_update_plugin_info() {
 
 		$q = new WP_Query;
 
@@ -205,14 +209,14 @@ class PluginInfo {
 			return;
 
 		foreach ( $posts as $p ) {
-			$plugin_info = $this->get_plugin_info( stripslashes( get_post_meta( $p->ID, 'plugin', true ) ) );
+			$plugin_info = $this->get_plugin_info( get_post_meta( $p->ID, 'plugin', true ) );
 			if ( $plugin_info )
 				update_post_meta( $p->ID, 'plugin-info', $plugin_info );
 		}
 
 	}
 
-	public function save_plugin_info( $post_ID ) {
+	public function action_save_post( $post_ID ) {
 
 		if ( wp_is_post_revision( $post_ID ) or wp_is_post_autosave( $post_ID ) )
 			return;
@@ -227,7 +231,7 @@ class PluginInfo {
 
 		} else {
 
-			$plugin = trim( $_POST['plugin_info'] );
+			$plugin = trim( stripslashes( $_POST['plugin_info'] ) );
 			$plugin_info = $this->get_plugin_info( $plugin );
 
 			if ( !$plugin_info )
@@ -242,7 +246,7 @@ class PluginInfo {
 
 	}
 
-	public function plugin_info_shortcode( $atts ) {
+	public function shortcode_plugin_info( $atts ) {
 
 		global $post;
 
@@ -265,6 +269,7 @@ class PluginInfo {
 			$texts = array(
 				'download' => __( 'Download', 'plugin-info' ),
 				'homepage' => __( 'Visit plugin homepage', 'plugin-info' ),
+				'donate'   => __( 'Donate', 'plugin-info' ),
 				'link'     => $this->meta[$key]['name'],
 				'profile'  => $this->meta[$key]['author_name']
 			);
@@ -297,10 +302,10 @@ class PluginInfo {
 
 	}
 
-	public function admin_head() {
+	public function action_admin_head() {
 		if ( self::is_post_writing_screen() ) {
 		?>
-		<script type="text/javascript"><!--
+		<script type="text/javascript">
 
 			jQuery(function($) {
 
@@ -321,7 +326,7 @@ class PluginInfo {
 
 			} );
 
-		--></script>
+		</script>
 		<style type="text/css">
 
 			#plugin_info {
@@ -390,6 +395,8 @@ class PluginInfo {
 				<dd class="howto"><?php _e( 'Download count', 'plugin_info' ); ?></dd>
 				<dt>[plugin homepage_url]</dt>
 				<dd class="howto"><?php _e( 'URL of homepage', 'plugin_info' ); ?></dd>
+				<dt>[plugin donate_url]</dt>
+				<dd class="howto"><?php _e( 'URL of donations page', 'plugin_info' ); ?></dd>
 				<dt>[plugin link_url]</dt>
 				<dd class="howto"><?php _e( 'URL of wp.org page', 'plugin_info' ); ?></dd>
 				<dt>[plugin name]</dt>
@@ -429,6 +436,8 @@ class PluginInfo {
 				<dd class="howto"><?php _e( 'Link to ZIP file', 'plugin_info' ); ?></dd>
 				<dt>[plugin homepage]</dt>
 				<dd class="howto"><?php _e( 'Link to homepage', 'plugin_info' ); ?></dd>
+				<dt>[plugin donate]</dt>
+				<dd class="howto"><?php _e( 'Link to donations page', 'plugin_info' ); ?></dd>
 				<dt>[plugin link]</dt>
 				<dd class="howto"><?php _e( 'Link to wp.org page', 'plugin_info' ); ?></dd>
 				<dt>[plugin profile]</dt>
@@ -447,7 +456,7 @@ class PluginInfo {
 		<?php
 	}
 
-	public function admin_menu() {
+	public function action_admin_menu() {
 		add_meta_box(
 			'plugininfo',
 			__( 'Plugin Info', 'plugin_info' ),
@@ -471,7 +480,7 @@ class PluginInfo {
 		return false;
 	}
 
-	public function activate() {
+	public function action_admin_init() {
 		if ( !wp_next_scheduled( 'update_plugin_info' ) )
 			wp_schedule_event( time(), 'hourly', 'update_plugin_info' );
 	}
@@ -497,5 +506,7 @@ function get_plugin_info( $slug, $attribute = 'version' ) {
 function plugin_info( $slug, $attribute = 'version' ) {
 	echo get_plugin_info( $slug, $attribute );
 }
+
+global $plugin_info;
 
 $plugininfo = new PluginInfo;
