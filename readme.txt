@@ -2,7 +2,7 @@
 Contributors: johnbillion, sivel
 Tags: plugin, info, data, utility, developer, meta, tool
 Requires at least: 3.4
-Tested up to: 3.6
+Tested up to: 3.8
 Stable tag: trunk
 
 Provides a simple way of displaying up-to-date information about specific WordPress Plugin Directory hosted plugins in your blog posts and pages.
@@ -89,10 +89,13 @@ The plugin information is collected from wp.org each time you save your post or 
 
 == Upgrade Notice ==
 
-= 0.8.1 =
-* Add support for the new [plugin donate] attribute and add some missing i18n.
+= 0.8.2 =
+* Remove some now-redundant processing of the screenshot URLs.
 
 == Changelog ==
+
+= 0.8.2 =
+* Remove some now-redundant processing of the screenshot URLs.
 
 = 0.8.1 =
 * Add support for the new [plugin donate] attribute and add some missing i18n.
