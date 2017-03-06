@@ -1,16 +1,16 @@
 <?php
 /*
 Plugin Name:  Plugin Info
-Description:  Provides a simple way of displaying up-to-date information about specific WordPress Plugin Directory hosted plugins in your blog posts and pages.
-Plugin URI:   https://lud.icro.us/wordpress-plugin-info/
-Version:      0.8.2
+Description:  Provides a simple way of displaying up-to-date information about WordPress Plugin Directory hosted plugins in your posts and pages.
+Plugin URI:   https://johnblackbourn.com/wordpress-plugin-info/
+Version:      0.8.3
 Author:       John Blackbourn
 Author URI:   https://johnblackbourn.com/
 Text Domain:  plugin-info
 Domain Path:  /languages/
 License:      GPL v2 or later
 
-Copyright © 2013 John Blackbourn
+Copyright © 2017 John Blackbourn
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
