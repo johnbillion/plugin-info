@@ -87,12 +87,10 @@ The plugin information is collected from wp.org each time you save your post or 
 
 1. Adding a plugin to a post. Remember to use the slug and not the name, as using the name isn't 100% reliable.
 
-== Upgrade Notice ==
-
-= 0.8.2 =
-* Remove some now-redundant processing of the screenshot URLs.
-
 == Changelog ==
+
+= 0.8.3 =
+* Bugfix for PHP 7
 
 = 0.8.2 =
 * Remove some now-redundant processing of the screenshot URLs.
