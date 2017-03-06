@@ -112,9 +112,9 @@ class PluginInfo {
 		$info['compat_with'] = $GLOBALS['wp_version'];
 		$info['downloaded']  = number_format_i18n( $info['downloaded_raw'] );
 		$info['rating']      = ceil( 0.05 * $info['rating_raw'] );
-		$info['link_url']    = "http://wordpress.org/plugins/{$info['slug']}/";
+		$info['link_url']    = "https://wordpress.org/plugins/{$info['slug']}/";
 		$info['updated']     = date_i18n( get_option('date_format'), strtotime( $info['updated_raw'] ) );
-		$info['updated_ago'] = sprintf( __('%s ago'), human_time_diff( strtotime( $info['updated_raw'] ) ) );
+		$info['updated_ago'] = sprintf( __( '%s ago', 'plugin-info' ), human_time_diff( strtotime( $info['updated_raw'] ) ) );
 		$info['download']    = '<a href="' . $info['download_url'] . '">%s</a>';
 		$info['homepage']    = '<a href="' . $info['homepage_url'] . '">%s</a>';
 		$info['link']        = '<a href="' . $info['link_url']     . '">%s</a>';
@@ -123,14 +123,16 @@ class PluginInfo {
 		if ( isset( $info['donate_url'] ) )
 			$info['donate'] = '<a href="' . $info['donate_url'] . '">%s</a>';
 
-		if ( isset( $info['contributors'] ) ) {
+		if ( ! empty( $info['contributors'] ) ) {
 			foreach ( (array) $info['contributors'] as $name => $link )
 				$info['contributors'][$name] = '<a href="' . $link . '">' . $name . '</a>';
 			$info['contributors'] = implode( ', ', $info['contributors'] );
 		}
 
-		if ( isset( $info['tags'] ) )
+		if ( ! empty( $info['tags'] ) )
 			$info['tags'] = implode( ', ', (array) $info['tags'] );
+		else
+			$info['tags'] = '';
 
 		if ( preg_match( '|href="([^"]+)"|i', $info['author'], $matches ) )
 			$info['author_url'] = $matches[1];
@@ -140,10 +142,10 @@ class PluginInfo {
 		else
 			$info['author_name'] = $info['author'];
 
-		if ( isset( $info['changelog'] ) and preg_match( "#<h4>{$info['version']}[^<]*</h4>(.*?)(<h4>|$)#is", $info['changelog'], $matches ) )
+		if ( ! empty( $info['changelog'] ) and preg_match( "#<h4>{$info['version']}[^<]*</h4>(.*?)(<h4>|$)#is", $info['changelog'], $matches ) )
 			$info['latest_change'] = trim( $matches[1] );
 
-		if ( isset( $info['other_notes'] ) and preg_match_all( '|<h3>([^<]+)</h3>|i', $info['other_notes'], $matches, PREG_SET_ORDER ) ) {
+		if ( ! empty( $info['other_notes'] ) and preg_match_all( '|<h3>([^<]+)</h3>|i', $info['other_notes'], $matches, PREG_SET_ORDER ) ) {
 			for ( $i = 0; isset( $matches[$i] ); $i++ ) {
 				$end = isset( $matches[$i+1][0] ) ? $matches[$i+1][0] : '$';
 				preg_match( '|' . $matches[$i][0] . '(.*)' . $end . '|si', $info['other_notes'], $match );
