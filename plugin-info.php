@@ -94,12 +94,12 @@ class PluginInfo {
 		foreach ( $attributes as $name => $key ) {
 		
 			if ( is_array( $key ) ) {
-				$_key = $plugin->$key[0];
+				$_key = $plugin->{$key[0]};
 				if ( isset( $_key[$key[1]] ) )
 					$info[$name] = $_key[$key[1]];
 			} else {
-				if ( isset( $plugin->$key ) )
-					$info[$name] = $plugin->$key;
+				if ( isset( $plugin->{$key} ) )
+					$info[$name] = $plugin->{$key};
 			}
 
 		}
