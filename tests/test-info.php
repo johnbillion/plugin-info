@@ -48,7 +48,7 @@ class Test_Info extends WP_UnitTestCase {
 			'homepage'          => '<a href="https://lud.icro.us/wordpress-plugin-info/">%s</a>',
 			'link'              => '<a href="https://wordpress.org/plugins/plugin-info/">%s</a>',
 			'profile'           => '<a href="https://profiles.wordpress.org/johnbillion">%s</a>',
-			// 'donate' => null,
+			'donate'            => null,
 			'author_url'        => null,
 			'author_name'       => null,
 			'latest_change'     => null,
