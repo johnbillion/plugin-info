@@ -311,7 +311,7 @@ class PluginInfo {
 				$('#plugin_info_shortcodes').hide();
 				$('#plugin_info_show_shortcodes').show().click(function(){
 					$('#plugin_info_shortcodes').toggle();
-					text = $('#plugin_info_shortcodes').is(':visible') ? '<?php esc_js( _e( '[ hide ]', 'plugin-info' ) ); ?>' : '<?php esc_js( _e( '[ show ]', 'plugin-info' ) ); ?>';
+					text = $('#plugin_info_shortcodes').is(':visible') ? '<?php echo esc_js( __( '[ hide ]', 'plugin-info' ) ); ?>' : '<?php echo esc_js( __( '[ show ]', 'plugin-info' ) ); ?>';
 					$(this).text(text);
 					return false;
 				});
