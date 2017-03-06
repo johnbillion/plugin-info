@@ -506,6 +506,6 @@ function plugin_info( $slug, $attribute = 'version' ) {
 	echo get_plugin_info( $slug, $attribute );
 }
 
-global $plugin_info;
+global $plugininfo;
 
 $plugininfo = new PluginInfo;
