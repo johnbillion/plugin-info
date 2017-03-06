@@ -120,7 +120,7 @@ class PluginInfo {
 		$info['link']        = '<a href="' . $info['link_url']     . '">%s</a>';
 		$info['profile']     = '<a href="' . $info['profile_url']  . '">%s</a>';
 
-		if ( isset( $info['donate_url'] ) )
+		if ( ! empty( $info['donate_url'] ) )
 			$info['donate'] = '<a href="' . $info['donate_url'] . '">%s</a>';
 
 		if ( ! empty( $info['contributors'] ) ) {
