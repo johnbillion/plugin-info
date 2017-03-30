@@ -51,7 +51,7 @@ class Test_Info extends WP_UnitTestCase {
 			// 'donate'            => null,
 			'author_url'        => null,
 			'author_name'       => null,
-			'latest_change'     => null,
+			// 'latest_change'     => null,
 			'download_link'     => null,
 			'tags_list'         => null,
 			'extend'            => null,
