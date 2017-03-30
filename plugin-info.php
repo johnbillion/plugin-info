@@ -166,30 +166,28 @@ class PluginInfo {
 		 * The `plugin_info` filter below allows a plugin/theme to add or
 		 * modify the available shortcodes.
 		 *
-		 * Example 1:
-		 *
-		 * function myfunction( $info, $slug, $plugin ) {
-		 * 	$info['fullname'] = $info['name'] . ' v' . $info['version'];
-		 * 	return $info;
-		 * }
-		 * add_filter( 'plugin_info', 'myfunction', 10, 3 );
-		 *
-		 * The above code would create a `[plugin fullname]` shortcode which
+		 * The below code would create a `[plugin fullname]` shortcode which
 		 * would return something like `My Wonderful Plugin v1.0`
 		 *
-		 * Example 2:
-		 *
-		 * function myfunction( $info, $slug, $plugin ) {
-		 * 	$info['requires'] = 'Requires at least WordPress version ' . $info['requires'];
-		 * 	return $info;
-		 * }
-		 * add_filter( 'plugin_info', 'myfunction', 10, 3 );
+		 *     add_filter( 'plugin_info', function( $info, $slug, $plugin ) {
+		 *         $info['fullname'] = $info['name'] . ' v' . $info['version'];
+		 *         return $info;
+		 *     }, 10, 3 );
 		 *
 		 * The above would modify the `[plugin requires]` shortcode so it returns
 		 * a full sentence explaining the minimum WP version requirement.
 		 *
+		 *     add_filter( 'plugin_info', function( $info, $slug, $plugin ) {
+		 *         $info['requires'] = 'Requires at least WordPress version ' . $info['requires'];
+		 *         return $info;
+		 *     }, 10, 3 );
+		 *
+		 * @since 0.2.0
+		 *
+		 * @param array    $info   The plugin info fields.
+		 * @param string   $slug   The plugin slug.
+		 * @param stdClass $plugin The raw Plugins API plugin data.
 		 */
-
 		return apply_filters( 'plugin_info', $info, $slug, $plugin );
 
 	}
@@ -282,21 +280,22 @@ class PluginInfo {
 		 * The `plugin_info_shortcode` filter below allows a plugin/theme
 		 * to format or otherwise modify the output of the shortcode.
 		 *
-		 * Example:
-		 *
-		 * function myfunction( $output, $attribute, $slug ) {
-		 * 	if ( 'screenshots' == $attribute ) {
-		 *   $output = str_replace( array( '<ol', '</ol' ), array( '<ul', '</ul' ), $output );
-		 *  }
-		 * 	return $output;
-		 * }
-		 * add_filter( 'plugin_info_shortcode', 'myfunction', 10, 3 );
-		 *
-		 * The above would modify the 'screenshots' output so the screenhots are
+		 * The below would modify the 'screenshots' output so the screenhots are
 		 * displayed in an unordered list instead of an ordered list.
 		 *
+		 *     add_filter( 'plugin_info_shortcode', function( $output, $attribute, $slug ) {
+		 *         if ( 'screenshots' == $attribute ) {
+		 *             $output = str_replace( array( '<ol', '</ol' ), array( '<ul', '</ul' ), $output );
+		 *         }
+		 *         return $output;
+		 *     }, 10, 3 );
+		 *
+		 * @since 0.7.4
+		 *
+		 * @param string $text The shortcode output.
+		 * @param string $att  The plugin attribute (eg. 'version' or 'screenshots').
+		 * @param string $slug The plugin slug.
 		 */
-
 		return apply_filters( 'plugin_info_shortcode', $this->meta[$key][$att], $att, $this->meta[$key]['slug'] );
 
 	}
