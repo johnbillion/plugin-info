@@ -110,37 +110,37 @@ class PluginInfo {
 			$info['compatibility'] = __( 'Unknown', 'plugin-info' );
 
 		$info['compat_with'] = $GLOBALS['wp_version'];
-		$info['downloaded']  = number_format_i18n( $info['downloaded_raw'] );
+		$info['downloaded']  = esc_html( number_format_i18n( $info['downloaded_raw'] ) );
 		$info['rating']      = ceil( 0.05 * $info['rating_raw'] );
-		$info['link_url']    = "https://wordpress.org/plugins/{$info['slug']}/";
-		$info['updated']     = date_i18n( get_option('date_format'), strtotime( $info['updated_raw'] ) );
-		$info['updated_ago'] = sprintf( __( '%s ago', 'plugin-info' ), human_time_diff( strtotime( $info['updated_raw'] ) ) );
-		$info['download']    = '<a href="' . $info['download_url'] . '">%s</a>';
-		$info['homepage']    = '<a href="' . $info['homepage_url'] . '">%s</a>';
-		$info['link']        = '<a href="' . $info['link_url']     . '">%s</a>';
-		$info['profile']     = '<a href="' . $info['profile_url']  . '">%s</a>';
+		$info['link_url']    = esc_html( "https://wordpress.org/plugins/{$info['slug']}/" );
+		$info['updated']     = esc_html( date_i18n( get_option('date_format'), strtotime( $info['updated_raw'] ) ) );
+		$info['updated_ago'] = esc_html(  sprintf( __( '%s ago', 'plugin-info' ), human_time_diff( strtotime( $info['updated_raw'] ) ) ) );
+		$info['download']    = '<a href="' . esc_url( $info['download_url'] ) . '">%s</a>';
+		$info['homepage']    = '<a href="' . esc_url( $info['homepage_url'] ) . '">%s</a>';
+		$info['link']        = '<a href="' . esc_url( $info['link_url'] )     . '">%s</a>';
+		$info['profile']     = '<a href="' . esc_url( $info['profile_url'] )  . '">%s</a>';
 
 		if ( ! empty( $info['donate_url'] ) )
-			$info['donate'] = '<a href="' . $info['donate_url'] . '">%s</a>';
+			$info['donate'] = '<a href="' . esc_url( $info['donate_url'] ) . '">%s</a>';
 
 		if ( ! empty( $info['contributors'] ) ) {
 			foreach ( (array) $info['contributors'] as $name => $link )
-				$info['contributors'][$name] = '<a href="' . $link . '">' . $name . '</a>';
-			$info['contributors'] = implode( ', ', $info['contributors'] );
+				$info['contributors'][$name] = '<a href="' . esc_url( $link ) . '">' . $name . '</a>';
+			$info['contributors'] = esc_html( implode( ', ', $info['contributors'] ) );
 		}
 
 		if ( ! empty( $info['tags'] ) )
-			$info['tags'] = implode( ', ', (array) $info['tags'] );
+			$info['tags'] = esc_html( implode( ', ', (array) $info['tags'] ) );
 		else
 			$info['tags'] = '';
 
 		if ( preg_match( '|href="([^"]+)"|i', $info['author'], $matches ) )
-			$info['author_url'] = $matches[1];
+			$info['author_url'] = esc_url( $matches[1] );
 
 		if ( preg_match( '|>([^<]+)<|i', $info['author'], $matches ) )
-			$info['author_name'] = $matches[1];
+			$info['author_name'] = esc_html( $matches[1] );
 		else
-			$info['author_name'] = $info['author'];
+			$info['author_name'] = esc_html( $info['author'] );
 
 		if ( ! empty( $info['changelog'] ) and preg_match( "#<h4>{$info['version']}[^<]*</h4>(.*?)(<h4>|$)#is", $info['changelog'], $matches ) )
 			$info['latest_change'] = trim( $matches[1] );
@@ -274,7 +274,7 @@ class PluginInfo {
 			);
 
 			$text = ( $atts['text'] ) ? $atts['text'] : $texts[$att];
-			$this->meta[$key][$att] = str_replace( '%s', $text, $this->meta[$key][$att] );
+			$this->meta[$key][$att] = str_replace( '%s', esc_html( $text ), $this->meta[$key][$att] );
 
 		}
 
