@@ -3,7 +3,7 @@
 Plugin Name:  Plugin Info
 Description:  Provides a simple way of displaying up-to-date information about WordPress Plugin Directory hosted plugins in your posts and pages.
 Plugin URI:   https://johnblackbourn.com/wordpress-plugin-info/
-Version:      0.8.3
+Version:      0.8.4
 Author:       John Blackbourn
 Author URI:   https://johnblackbourn.com/
 Text Domain:  plugin-info
