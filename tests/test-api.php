@@ -5,63 +5,85 @@
  */
 class Test_API extends WP_UnitTestCase {
 
-	function test_expected_api_format() {
+	protected static $plugin_info = null;
 
+	public static function setUpBeforeClass() {
 		require_once ABSPATH . 'wp-admin/includes/plugin-install.php';
 
-		$info   = array();
-		$plugin = plugins_api( 'plugin_information', array(
+		self::$plugin_info = plugins_api( 'plugin_information', array(
 			'slug' => 'plugin-info',
 		) );
 
-		$this->assertNotEmpty( $plugin );
-		$this->assertNotWPError( $plugin );
-		$this->assertInstanceOf( 'stdClass', $plugin );
+		parent::setUpBeforeClass();
+	}
+
+	public function setUp() {
+		parent::setUp();
+
+		$this->assertNotEmpty( self::$plugin_info );
+		$this->assertNotWPError( self::$plugin_info );
+		$this->assertInstanceOf( 'stdClass', self::$plugin_info );
+	}
+
+	public function test_expected_api_format() {
+		$info = array();
 
 		$expected = array(
-			'name'           => 'string',
-			'slug'           => 'string',
-			'version'        => 'string',
-			'author'         => 'string',
-			'author_profile' => 'string',
-			'contributors'   => 'array',
-			'requires'       => 'string',
-			'tested'         => 'string',
-			'compatibility'  => 'array',
-			'rating'         => 'float',
-			'num_ratings'    => 'string',
-			'ratings'        => 'array',
-			'downloaded'     => 'int',
-			'last_updated'   => 'string',
-			'added'          => 'string',
-			'homepage'       => 'string',
-			'sections'       => 'array',
-			'download_link'  => 'string',
-			'tags'           => 'array',
-			'donate_link'    => 'string',
+			'added'                    => 'string',
+			'author'                   => 'string',
+			'author_profile'           => 'string',
+			'compatibility'            => 'array',
+			'contributors'             => 'array',
+			'donate_link'              => 'string',
+			'download_link'            => 'string',
+			'downloaded'               => 'int',
+			'homepage'                 => 'string',
+			'last_updated'             => 'string',
+			'name'                     => 'string',
+			'num_ratings'              => 'int',
+			'rating'                   => 'int',
+			'ratings'                  => 'array',
+			'requires'                 => 'string',
+			'screenshots'              => 'array',
+			'sections'                 => 'array',
+			'slug'                     => 'string',
+			'stable_tag'               => 'string',
+			'support_threads'          => 'int',
+			'support_threads_resolved' => 'int',
+			'tags'                     => 'array',
+			'tested'                   => 'string',
+			'version'                  => 'string',
+			'versions'                 => 'array',
 		);
+		$actual = array_keys( get_object_vars( self::$plugin_info ) );
+		sort( $actual );
 
-		$this->assertEquals( array_keys( $expected ), array_keys( get_object_vars( $plugin ) ) );
+		$this->assertEquals( array_keys( $expected ), $actual );
 
 		foreach ( $expected as $name => $type ) {
-			$this->assertInternalType( $type, $plugin->{$name}, "Expecting {$type} for {$name}." );
+			$this->assertInternalType( $type, self::$plugin_info->{$name}, "Expecting {$type} for {$name}." );
 		}
+	}
 
-		$sections = array(
-			'description',
-			'installation',
-			'screenshots',
-			'changelog',
-			'faq',
-			// 'other_notes',
+	public function test_expected_api_sections() {
+		$this->assertObjectHasAttribute( 'sections', self::$plugin_info );
+
+		$expected = array(
+			'changelog'    => 'string',
+			'description'  => 'string',
+			'faq'          => 'string',
+			'installation' => 'string',
+			// 'other_notes' => 'string',
+			'screenshots'  => 'string',
 		);
+		$actual = array_keys( self::$plugin_info->sections );
+		sort( $actual );
 
-		$this->assertEquals( $sections, array_keys( $plugin->sections ) );
+		$this->assertEquals( array_keys( $expected ), $actual );
 
-		foreach ( $sections as $name ) {
-			$this->assertInternalType( 'string', $plugin->sections[ $name ], "Expecting string for {$name} section." );
+		foreach ( $expected as $name => $type ) {
+			$this->assertInternalType( $type, self::$plugin_info->sections[ $name ], "Expecting {$type} for {$name} section." );
 		}
-
 	}
 
 }
