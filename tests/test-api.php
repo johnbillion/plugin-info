@@ -47,7 +47,6 @@ class Test_API extends WP_UnitTestCase {
 			'screenshots'              => 'array',
 			'sections'                 => 'array',
 			'slug'                     => 'string',
-			'stable_tag'               => 'string',
 			'support_threads'          => 'int',
 			'support_threads_resolved' => 'int',
 			'tags'                     => 'array',
