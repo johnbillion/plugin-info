@@ -72,7 +72,7 @@ class Test_API extends WP_UnitTestCase {
 			'changelog'    => 'string',
 			'description'  => 'string',
 			'faq'          => 'string',
-			'installation' => 'string',
+			// 'installation' => 'string',
 			// 'other_notes' => 'string',
 			'screenshots'  => 'string',
 		);
