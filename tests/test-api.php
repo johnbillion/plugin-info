@@ -44,6 +44,7 @@ class Test_API extends WP_UnitTestCase {
 			'rating'                   => 'int',
 			'ratings'                  => 'array',
 			'requires'                 => 'string',
+			'requires_php'             => 'bool',
 			'screenshots'              => 'array',
 			'sections'                 => 'array',
 			'slug'                     => 'string',

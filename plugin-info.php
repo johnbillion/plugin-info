@@ -73,6 +73,7 @@ class PluginInfo {
 			'profile_url'    => 'author_profile',
 			'contributors'   => 'contributors',
 			'requires'       => 'requires',
+			'requires_php'   => 'requires_php',
 			'tested'         => 'tested',
 			'compatibility'  => 'compatibility',
 			'rating_raw'     => 'rating',
@@ -402,7 +403,9 @@ class PluginInfo {
 				<dt>[plugin profile_url]</dt>
 				<dd class="howto"><?php _e( 'URL of author&rsquo;s wp.org profile', 'plugin-info' ); ?></dd>
 				<dt>[plugin requires]</dt>
-				<dd class="howto"><?php _e( '&rsquo;Requires at least&lsquo; version number', 'plugin-info' ); ?></dd>
+				<dd class="howto"><?php _e( '&rsquo;Requires at least&lsquo; WordPress version number', 'plugin-info' ); ?></dd>
+				<dt>[plugin requires_php]</dt>
+				<dd class="howto"><?php _e( '&rsquo;Requires at least&lsquo; PHP version number', 'plugin-info' ); ?></dd>
 				<dt>[plugin rating]</dt>
 				<dd class="howto"><?php _e( 'Rating out of 5', 'plugin-info' ); ?></dd>
 				<dt>[plugin slug]</dt>
